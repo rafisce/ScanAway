@@ -1,0 +1,3 @@
+include ':openCV4'
+include ':app'
+rootProject.name = "ScanAway"
