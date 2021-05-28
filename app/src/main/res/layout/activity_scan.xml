@@ -62,8 +62,6 @@
             </TextView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.bottomappbar.BottomAppBar
@@ -87,25 +85,29 @@
             android:layout_height="match_parent">
 
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/iv1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_photo"
+                android:background="@color/transparent"
+                android:soundEffectsEnabled="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/check"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-            </ImageView>
+            </ImageButton>
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/check"
+                android:background="@color/transparent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="150dp"
                 android:src="@drawable/ic_check"
+                android:soundEffectsEnabled="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -113,7 +115,7 @@
                 app:layout_constraintTop_toTopOf="@id/cl"
                 app:layout_constraintVertical_bias="0.83">
 
-            </ImageView>
+            </ImageButton>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.bottomappbar.BottomAppBar>
@@ -122,6 +124,7 @@
         android:id="@+id/capture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:soundEffectsEnabled="true"
         android:src="@drawable/ic_camera_24"
         app:layout_anchor="@id/bottomAppBar" />
 

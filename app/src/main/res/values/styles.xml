@@ -5,4 +5,10 @@
         <item name="colorPrimaryVariant">#0F9D58</item>
         <item name="colorOnPrimary">#000</item>
     </style>
+    <style name="roundImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+        <item name="color">@color/transparent</item>
+        <item name="borderWidth">3dp</item>
+    </style>
 </resources>

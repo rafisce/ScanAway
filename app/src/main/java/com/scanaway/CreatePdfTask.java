@@ -36,7 +36,7 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
         context = context2;
         files = arrayList;
         folder = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOCUMENTS).getAbsolutePath()+"/ScanAway";
+                Environment.DIRECTORY_DOCUMENTS).getAbsolutePath() + "/ScanAway";
 
     }
 
@@ -58,7 +58,7 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String formattedDate = df.format(c.getTime());
-        File folder = new File( Environment.getExternalStoragePublicDirectory(
+        File folder = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS) +
                 File.separator + "ScanAway");
         boolean success = true;
@@ -67,8 +67,8 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
         }
         if (success) {
 
-            File outputMediaFile = new File( Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOCUMENTS), "ScanAway/ScanAway_"+formattedDate + ".pdf");
+            File outputMediaFile = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS), "ScanAway/ScanAway_" + formattedDate + ".pdf");
 
             Document document = new Document(PageSize.A4, 0, 0, 0, 0);
             try {
@@ -88,8 +88,6 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
 
                         File f = new File(context.getCacheDir(), "filename");
                         f.createNewFile();
-
-//Convert bitmap to byte array
                         Bitmap bitmap = BitmapFactory.decodeFile(files.get(i).getAbsolutePath());
                         Matrix matrix = new Matrix();
                         matrix.postRotate(90);
@@ -102,7 +100,6 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
                         fos.write(bitmapdata);
                         fos.flush();
                         fos.close();
-
 
 
                         Image image = Image.getInstance(f.getAbsolutePath());

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FilterActivity">
+
+    <com.marcinmoskala.arcseekbar.ArcSeekBar
+        android:id="@+id/contrast"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/brightness"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:progress="100"
+        app:maxProgress="100"
+        app:progressBackgroundWidth="5dp"
+        app:progressColor="@color/soft_orange"
+        app:progressWidth="5dp"
+        app:roundEdges="true" />
+
+    <com.marcinmoskala.arcseekbar.ArcSeekBar
+        android:id="@+id/brightness"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.05"
+        app:progress="100"
+        app:maxProgress="100"
+        app:progressBackgroundColor="@color/soft_orange"
+        app:progressBackgroundWidth="5dp"
+        app:progressColor="@color/soft_orange"
+        app:progressWidth="5dp"
+        app:roundEdges="true" />
+
+
+    <ImageView
+        android:id="@+id/main_prev"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@id/prev_menu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+    </ImageView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/prev_menu"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="horizontal"
+            android:weightSum="6"
+
+            >
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/filter1"
+                android:scaleType="fitXY"
+                app:riv_corner_radius="10dp"
+                app:riv_border_width="3dip"
+                app:riv_border_color="@color/soft_orange"
+                android:layout_weight="1"
+                />
+            <com.makeramen.roundedimageview.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/filter2"
+                android:scaleType="fitXY"
+                app:riv_corner_radius="10dp"
+                app:riv_border_width="3dip"
+                app:riv_border_color="@color/transparent"
+                android:layout_weight="1"
+                />
+
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/filter3"
+                android:scaleType="fitXY"
+                app:riv_corner_radius="10dp"
+                app:riv_border_width="3dip"
+                app:riv_border_color="@color/transparent"
+                android:layout_weight="1"
+                />
+            <com.makeramen.roundedimageview.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/filter4"
+                android:scaleType="fitXY"
+                app:riv_corner_radius="10dp"
+                app:riv_border_width="3dip"
+                app:riv_border_color="@color/transparent"
+                android:layout_weight="1"
+                />
+            <com.makeramen.roundedimageview.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/filter5"
+                android:scaleType="fitXY"
+                app:riv_corner_radius="10dp"
+                app:riv_border_width="3dip"
+                app:riv_border_color="@color/transparent"
+                android:layout_weight="1"
+                />
+
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/filter6"
+                android:scaleType="fitXY"
+                app:riv_corner_radius="10dp"
+                app:riv_border_width="3dip"
+                app:riv_border_color="@color/transparent"
+                android:layout_weight="1"
+                />
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
