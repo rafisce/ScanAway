@@ -173,6 +173,8 @@ public class FilterActivity extends AppCompatActivity {
         input.setInputType(InputType.TYPE_CLASS_TEXT );
         builder.setView(input);
 
+
+
         builder.setPositiveButton("אישור", null);
         builder.setNegativeButton("ביטול", null);
         AlertDialog dialog = builder.show();

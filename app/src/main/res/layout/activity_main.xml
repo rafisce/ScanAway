@@ -4,10 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:padding="10dp"
-    >
-
+    tools:context=".MainActivity">
 
 
 
@@ -15,11 +12,9 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
->
-
+        android:padding="10dp"
+        >
     </androidx.recyclerview.widget.RecyclerView>
-
-
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
@@ -42,12 +37,12 @@
 
 
             <ImageButton
-                android:id="@+id/iv1"
+                android:id="@+id/gallery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_photo"
                 android:background="@color/transparent"
                 android:soundEffectsEnabled="true"
+                android:src="@drawable/ic_photo"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/check"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -58,16 +53,16 @@
 
             <ImageButton
                 android:id="@+id/check"
-                android:background="@color/transparent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="150dp"
-                android:src="@drawable/ic_check"
+                android:background="@color/transparent"
                 android:soundEffectsEnabled="true"
+                android:src="@drawable/ic_check"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/iv1"
+                app:layout_constraintStart_toEndOf="@+id/gallery"
                 app:layout_constraintTop_toTopOf="@id/cl"
                 app:layout_constraintVertical_bias="0.83">
 
@@ -81,9 +76,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:soundEffectsEnabled="true"
-        android:src="@drawable/ic_camera_24"
+        android:src="@drawable/ic_scanner"
         app:layout_anchor="@id/bottomAppBar"
 
         />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

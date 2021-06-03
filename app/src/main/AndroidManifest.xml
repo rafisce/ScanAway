@@ -15,13 +15,20 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.ScanAway">
-        <activity android:name=".FilterActivity" android:label="Filter"/>
-        <activity android:name=".CropActivity" android:label="Crop"/>
-        <activity android:name=".ScanActivity" android:label="Scan">
-
-        </activity>
+        <activity android:name=".ViewPdf"></activity>
+        <activity
+            android:name=".FilterActivity"
+            android:label="Filter" />
+        <activity
+            android:name=".CropActivity"
+            android:label="Crop" />
+        <activity
+            android:name=".ScanActivity"
+            android:label="Scan"></activity>
         <activity android:name=".Welcome" />
-        <activity android:name=".MainActivity" android:label="Dashboard">
+        <activity
+            android:name=".MainActivity"
+            android:label="Dashboard">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

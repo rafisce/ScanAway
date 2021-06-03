@@ -50,6 +50,7 @@ dependencies {
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.jakewharton:butterknife:10.2.3'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
 
 
     implementation project(path: ':openCV4')

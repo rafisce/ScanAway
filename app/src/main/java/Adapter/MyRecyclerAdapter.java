@@ -1,7 +1,9 @@
 package Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
@@ -16,10 +18,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.scanaway.FilterActivity;
 import com.scanaway.R;
+import com.scanaway.ScanActivity;
+import com.scanaway.ViewPdf;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,18 +65,6 @@ implements ItemTouchHelperAdapter {
         holder.scanDate.setText(scans.get(position).getDate());
         holder.scanImg.setImageBitmap(scans.get(position).getBitmap());
 
-//        holder.item.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                final int action = event.getAction();
-//                if(action == MotionEvent.ACTION_DOWN)
-//                {
-//                    listener.onStartDrag(holder);
-//                }
-//                return false;
-//            }
-//        });
-
         holder.item.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -78,6 +72,18 @@ implements ItemTouchHelperAdapter {
                     listener.onStartDrag(holder);
 
                 return false;
+            }
+        });
+
+        holder.item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Intent intent = new Intent(ctx, ViewPdf.class);
+                intent.putExtra("path",scans.get(position).getFile().getAbsolutePath());
+                ctx.startActivity(intent);
+
             }
         });
 

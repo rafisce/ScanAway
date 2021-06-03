@@ -1,35 +1,26 @@
 package com.scanaway;
 
-import androidx.appcompat.app.AlertDialog;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.InputType;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-
+import android.widget.ImageButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.io.File;
 import java.util.ArrayList;
-
 import Adapter.MyRecyclerAdapter;
 import Helper.MyItemTouchHelperCallback;
 import Helper.OnStartDragListener;
 import Helper.Scan;
-import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.BindView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -39,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ItemTouchHelper itemTouchHelper;
     FloatingActionButton scan;
-    private ProgressDialog dialog;
+    ImageButton gallery;
+    ProgressDialog dialog;
     ArrayList<File> fileList = new ArrayList<>();
     ArrayList<Scan> scanList = new ArrayList<>();
 
@@ -55,8 +47,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        gallery = findViewById(R.id.gallery);
         dialog = new ProgressDialog(this);
         scan = findViewById(R.id.go_to_scan);
+
         scan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
 
         fileList = ScanAwayUtils.getAllFiles(path);
         if(!fileList.isEmpty()) {
@@ -133,5 +129,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    
+
 }

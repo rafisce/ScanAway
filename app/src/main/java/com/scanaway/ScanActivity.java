@@ -66,7 +66,7 @@ public class ScanActivity extends AppCompatActivity {
     TextureView textureView;
     FloatingActionButton capture;
     ArrayList<Bitmap> scans = new ArrayList<>();
-//    ArrayList<File> allImages = new ArrayList<>();
+
 
 
     @Override
