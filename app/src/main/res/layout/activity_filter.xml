@@ -18,10 +18,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:progress="100"
-        app:maxProgress="100"
-        app:progressBackgroundWidth="5dp"
-        app:progressColor="@color/soft_orange"
-        app:progressWidth="5dp"
+        app:maxProgress="1000"
+        app:progressBackgroundColor="@color/purple_200"
+        app:progressBackgroundWidth="6dp"
+        app:progressColor="@color/purple_500"
+        app:progressWidth="6dp"
         app:roundEdges="true" />
 
     <com.marcinmoskala.arcseekbar.ArcSeekBar
@@ -35,20 +36,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.05"
-        app:progress="100"
-        app:maxProgress="100"
-        app:progressBackgroundColor="@color/soft_orange"
-        app:progressBackgroundWidth="5dp"
-        app:progressColor="@color/soft_orange"
-        app:progressWidth="5dp"
+        app:progress="500"
+        app:maxProgress="1000"
+        app:progressBackgroundColor="@color/purple_200"
+        app:progressBackgroundWidth="6dp"
+        app:progressColor="@color/purple_500"
+        app:progressWidth="6dp"
         app:roundEdges="true" />
+
 
 
     <ImageView
         android:id="@+id/main_prev"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@id/prev_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,6 +72,7 @@
 
 
         <LinearLayout
+            android:background="@color/purple_200"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -89,7 +92,7 @@
                 android:scaleType="fitXY"
                 app:riv_corner_radius="10dp"
                 app:riv_border_width="3dip"
-                app:riv_border_color="@color/soft_orange"
+                app:riv_border_color="@color/purple_200"
                 android:layout_weight="1"
                 />
             <com.makeramen.roundedimageview.RoundedImageView
@@ -151,6 +154,9 @@
                 app:riv_border_color="@color/transparent"
                 android:layout_weight="1"
                 />
+
+
+
         </LinearLayout>
 
 

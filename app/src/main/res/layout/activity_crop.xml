@@ -10,7 +10,7 @@
        android:id="@+id/cropImageView"
        android:layout_width="match_parent"
        android:layout_height="0dp"
-       app:cropBorderCornerColor="@color/soft_orange"
+       app:cropBorderCornerColor="@color/purple_500"
        app:cropBorderLineThickness="0.1px"
        app:cropGuidelines="off"
        app:layout_constraintBottom_toTopOf="@+id/crop_actions"

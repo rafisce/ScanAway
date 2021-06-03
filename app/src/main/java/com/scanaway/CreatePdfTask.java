@@ -1,7 +1,9 @@
 package com.scanaway;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -30,13 +32,15 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
     ArrayList<File> files;
     ProgressDialog progressDialog;
     String folder;
+    String name;
 
 
-    public CreatePdfTask(Context context2, ArrayList<File> arrayList) {
+    public CreatePdfTask(Context context2, ArrayList<File> arrayList,String name) {
         context = context2;
         files = arrayList;
         folder = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS).getAbsolutePath() + "/ScanAway";
+        this.name=name;
 
     }
 
@@ -55,9 +59,7 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
 
     @Override
     protected File doInBackground(String... strings) {
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-        String formattedDate = df.format(c.getTime());
+
         File folder = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS) +
                 File.separator + "ScanAway");
@@ -68,7 +70,7 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
         if (success) {
 
             File outputMediaFile = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOCUMENTS), "ScanAway/ScanAway_" + formattedDate + ".pdf");
+                    Environment.DIRECTORY_DOCUMENTS), "ScanAway/"+name+".pdf");
 
             Document document = new Document(PageSize.A4, 0, 0, 0, 0);
             try {
@@ -89,24 +91,20 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
                         File f = new File(context.getCacheDir(), "filename");
                         f.createNewFile();
                         Bitmap bitmap = BitmapFactory.decodeFile(files.get(i).getAbsolutePath());
-                        Matrix matrix = new Matrix();
-                        matrix.postRotate(90);
-                        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
-                        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-                        byte[] bitmapdata = bos.toByteArray();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos);
+                        byte[] bitmapData = bos.toByteArray();
                         FileOutputStream fos = new FileOutputStream(f);
-                        fos.write(bitmapdata);
+                        fos.write(bitmapData);
                         fos.flush();
                         fos.close();
 
 
                         Image image = Image.getInstance(f.getAbsolutePath());
 
-                        float scaler = ((document.getPageSize().getWidth() - document.leftMargin()
+                        float scalar = ((document.getPageSize().getWidth() - document.leftMargin()
                                 - document.rightMargin() - 0) / image.getWidth()) * 100; // 0 means you have no indentation. If you have any, change it.
-                        image.scalePercent(scaler);
+                        image.scalePercent(scalar);
                         image.setAlignment(Image.ALIGN_CENTER | Image.ALIGN_TOP);
                         image.setAbsolutePosition((document.getPageSize().getWidth() - image.getScaledWidth()) / 2.0f,
                                 (document.getPageSize().getHeight() - image.getScaledHeight()) / 2.0f);
@@ -124,10 +122,18 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
                     }
                 } else {
                     document.close();
+                    ScanAwayUtils.deleteRecursive(new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DCIM) +
+                            File.separator + "ScanAway"));
+                    ScanAwayUtils.deleteRecursive(new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DCIM) +
+                            File.separator + "ScanAwayTemp"));
                     return outputMediaFile;
                 }
+
             }
             // Do something on success
+
         } else {
             // Do something else on failure
             return null;
@@ -140,7 +146,7 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
         super.onProgressUpdate(values);
         this.progressDialog.setProgress(((values[0] + 1) * 100) / this.files.size());
         StringBuilder sb = new StringBuilder();
-        sb.append("Processing images (");
+        sb.append("מאבד תמונות (");
         sb.append(values[0] + 1);
         sb.append("/");
         sb.append(this.files.size());
@@ -152,6 +158,12 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
     protected void onPostExecute(File file) {
         super.onPostExecute(file);
         progressDialog.dismiss();
-        Toast.makeText(context, "Pdf store at " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+
+        Toast.makeText(context, "Pdf נשמר ב - " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+        ((Activity)context).finish();
+
     }
 }

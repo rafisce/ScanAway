@@ -2,10 +2,13 @@ package com.scanaway;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Instrumentation;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -23,15 +26,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
+import java.util.UUID;
 
 public class CropActivity extends AppCompatActivity {
 
+
+    int imagesCount = 0;
     ImageView confirm, rRight, rLeft, crop;
     CropImageView cropImageView;
-    ArrayList<File> scan;
     ArrayList<Bitmap> croppedImages = new ArrayList<>();
-    ArrayList<String> crops = new ArrayList<>();
-    int imagesCount = 0;
+
+    static ArrayList<Bitmap> scans;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +55,7 @@ public class CropActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     cropNext();
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -79,90 +85,51 @@ public class CropActivity extends AppCompatActivity {
         });
 
 
-        scan = (ArrayList<File>) getIntent().getSerializableExtra("scan");
-        if (scan.size() == 1) {
+
+        if (scans.size() == 1) {
             confirm.setImageResource(R.drawable.ic_check);
         }
         cropImageView = (CropImageView) findViewById(R.id.cropImageView);
-        cropImageView.setScaleType(CropImageView.ScaleType.CENTER_CROP);
         cropImageView.setAutoZoomEnabled(true);
         cropImageView.setShowProgressBar(true);
-        cropImageView.setImageUriAsync(Uri.fromFile(scan.get(imagesCount)));
-
+        cropImageView.setScaleType(CropImageView.ScaleType.CENTER_CROP);
+        cropImageView.setImageBitmap(scans.get(imagesCount));
 
     }
 
     @Override
     public void onBackPressed() {
-        // your code.
         finish();
     }
 
-    private void cropNext() throws IOException {
+    private void cropNext() throws IOException, InterruptedException {
 
-        Log.i("CropActivity", "cropNext " + String.valueOf(imagesCount));
+        if (imagesCount <= scans.size() - 2 && scans.size() != 1) {
 
-        if (imagesCount <= scan.size() - 2 && scan.size() != 1) {
-
-            Bitmap cropped = cropImageView.getCroppedImage();
-            croppedImages.add(cropped);
+            croppedImages.add(cropImageView.getCroppedImage());
+            cropImageView.setImageBitmap(scans.get(imagesCount));
             imagesCount++;
-            cropImageView.setImageUriAsync(Uri.fromFile(scan.get(imagesCount)));
 
-            if (imagesCount == scan.size() - 1) {
+            if (imagesCount == scans.size() - 1) {
                 confirm.setImageResource(R.drawable.ic_check);
             }
 
         } else {
 
-            if (scan.size() == 1) {
-                Bitmap cropped = cropImageView.getCroppedImage();
-                croppedImages.add(cropped);
-
-            }
-            for (Bitmap bm : croppedImages) {
-                Calendar c = Calendar.getInstance();
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-                String formattedDate = df.format(c.getTime());
-                File folder = new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DCIM) +
-                        File.separator + "ScanAwayTemp");
-                boolean success = true;
-                if (!folder.exists()) {
-                    success = folder.mkdirs();
-                } else {
-
-                    ScanAwayUtils.deleteFolderContent(folder);
-                }
-
-                if (success) {
-
-                    File dir = new File(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DCIM), "ScanAwayTemp/ScanAway_" + formattedDate + ".jpg");
-                    crops.add(dir.getAbsolutePath());
-                    try {
-
-                        FileOutputStream out = new FileOutputStream(dir);
-                        bm.compress(Bitmap.CompressFormat.JPEG, 90, out);
-                        out.flush();
-                        out.close();
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                    }
-                }
-            }
+            croppedImages.add(cropImageView.getCroppedImage());
             goToFiltering();
         }
     }
 
 
     public void goToFiltering() {
-        Intent intent = new Intent(this, FilterActivity.class);
-        intent.putExtra("crops", crops);
+
+        FilterActivity.cropped = croppedImages;
+        Intent intent = new Intent(getBaseContext(), FilterActivity.class);
         startActivity(intent);
         finish();
+
+
     }
 
 

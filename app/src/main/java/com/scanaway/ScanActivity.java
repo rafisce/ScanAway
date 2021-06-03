@@ -48,6 +48,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.UUID;
 
 import static org.opencv.imgproc.Imgproc.floodFill;
 
@@ -57,14 +58,15 @@ public class ScanActivity extends AppCompatActivity {
     private String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
 
-    BottomNavigationView bnv;
-    FloatingActionButton capture;
+
     int count = 0;
-    TextureView textureView;
-    TextView imageCount;
-    ImageView lastPage;
     ImageButton check;
-    ArrayList<File> allImages = new ArrayList<>();
+    ImageView lastPage;
+    TextView imageCount;
+    TextureView textureView;
+    FloatingActionButton capture;
+    ArrayList<Bitmap> scans = new ArrayList<>();
+//    ArrayList<File> allImages = new ArrayList<>();
 
 
     @Override
@@ -138,9 +140,7 @@ public class ScanActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Calendar c = Calendar.getInstance();
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-                String formattedDate = df.format(c.getTime());
+
                 File folder = new File(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_DCIM) +
                         File.separator + "ScanAway");
@@ -150,12 +150,12 @@ public class ScanActivity extends AppCompatActivity {
                 }
                 if (success) {
                     File dir = new File(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DCIM), "ScanAway/ScanAway_" + formattedDate + ".jpg");
+                            Environment.DIRECTORY_DCIM), "ScanAway/ScanAway_" + UUID.randomUUID().toString() + ".jpg");
                     imgCap.takePicture(dir, new ImageCapture.OnImageSavedListener() {
                         @Override
                         public void onImageSaved(@NonNull File file) {
                             String msg = "Photo capture succeeded: " + file.getAbsolutePath();
-                            galleryAddPic(file.getAbsolutePath());
+//                            galleryAddPic(file.getAbsolutePath());
                             Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
                             trackPhotos(file);
                         }
@@ -250,26 +250,22 @@ public class ScanActivity extends AppCompatActivity {
         return true;
     }
 
-    private void galleryAddPic(String path) {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(path);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-    }
+//    private void galleryAddPic(String path) {
+//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        File f = new File(path);
+//        Uri contentUri = Uri.fromFile(f);
+//        mediaScanIntent.setData(contentUri);
+//        this.sendBroadcast(mediaScanIntent);
+//    }
 
     private void trackPhotos(File file) {
 
         count++;
         if (file.exists()) {
 
-            allImages.add(file);
-            Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            Matrix matrix = new Matrix();
-            matrix.postRotate(90);
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(myBitmap, myBitmap.getWidth(), myBitmap.getHeight(), true);
-            Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-            lastPage.setImageBitmap(rotatedBitmap);
+            Bitmap scan = BitmapFactory.decodeFile(file.getAbsolutePath());
+            scans.add(scan);
+            lastPage.setImageBitmap(ScanAwayUtils.rotateBitmap(scan));
             imageCount.setText(String.valueOf(count));
             imageCount.setVisibility(View.VISIBLE);
             lastPage.setAlpha(255);
@@ -283,21 +279,11 @@ public class ScanActivity extends AppCompatActivity {
         lastPage.setAlpha(50);
     }
 
-    private void savePfd() {
-//        File folderPath = new File(Environment.getExternalStorageDirectory() + "/YourImagesFolder");
-//
-//        File[] imageList = folderPath .listFiles();
-//        ArrayList<File> imagesArrayList = new ArrayList<>();
-//        for (File absolutePath : imageList) {
-//            imagesArrayList.add(absolutePath);
-//        }
-        new CreatePdfTask(this, allImages).execute();
-    }
 
     private void goToEdit() {
-        if (!allImages.isEmpty()) {
+        if (!scans.isEmpty()) {
+            CropActivity.scans = scans;
             Intent intent = new Intent(this, CropActivity.class);
-            intent.putExtra("scan", allImages);
             startActivity(intent);
             finish();
         }

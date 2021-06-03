@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:layout_marginBottom="5dp"
-                android:background="@drawable/round_background_orange"
+                android:background="@drawable/round_background"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textStyle="bold"
@@ -126,7 +126,9 @@
         android:layout_height="wrap_content"
         android:soundEffectsEnabled="true"
         android:src="@drawable/ic_camera_24"
-        app:layout_anchor="@id/bottomAppBar" />
+        app:layout_anchor="@id/bottomAppBar"
+
+        />
 
 
     <!--    <ImageView-->

@@ -1,21 +1,26 @@
+
+
 package com.scanaway;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -23,23 +28,12 @@ import com.marcinmoskala.arcseekbar.ArcSeekBar;
 import com.marcinmoskala.arcseekbar.ProgressListener;
 
 import org.opencv.android.OpenCVLoader;
-import org.opencv.android.Utils;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Scalar;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
-import static org.opencv.imgcodecs.Imgcodecs.IMREAD_GRAYSCALE;
-import static org.opencv.imgproc.Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C;
-import static org.opencv.imgproc.Imgproc.ADAPTIVE_THRESH_MEAN_C;
-import static org.opencv.imgproc.Imgproc.CHAIN_APPROX_SIMPLE;
-import static org.opencv.imgproc.Imgproc.RETR_EXTERNAL;
-import static org.opencv.imgproc.Imgproc.THRESH_BINARY;
+import Helper.Scan;
 
 public class FilterActivity extends AppCompatActivity {
 
@@ -55,25 +49,31 @@ public class FilterActivity extends AppCompatActivity {
         }
     }
 
+    ProgressDialog dialog;
+    int checkFilter = 0;
     Bitmap original;
     Bitmap testPrev;
     ImageView mainPrev;
-    Mat grayMat, originalMat, thresh, thresh2, thresh3, thresh4;
     ArcSeekBar contrast, brightness;
     ArrayList<Bitmap> filters = new ArrayList<>();
     ArrayList<RoundedImageView> prev = new ArrayList<>();
+
+    static ArrayList<Bitmap> cropped;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
 
-//        ArrayList<String> scan = (ArrayList<String>) getIntent().getSerializableExtra("crops");
-
+        dialog = new ProgressDialog(this);
+        new MyTaskFilter().execute();
         contrast = findViewById(R.id.contrast);
         brightness = findViewById(R.id.brightness);
 
-        int[] colorArray = getResources().getIntArray(R.array.gradient);
+
+
+        int[] colorArray = getResources().getIntArray(R.array.purple_gradient);
         contrast.setProgressBackgroundGradient(colorArray);
         brightness.setProgressBackgroundGradient(colorArray);
         contrast.bringToFront();
@@ -84,10 +84,8 @@ public class FilterActivity extends AppCompatActivity {
             @Override
             public void invoke(int i) {
 
-                float contrastValue = i/10;
-                mainPrev.setImageBitmap(ScanAwayUtils.changeBitmapContrastBrightness(testPrev,contrastValue,0));
-                Log.i("contrast",String.valueOf(contrastValue));
-
+                float contrastValue = ScanAwayUtils.contrastConversion(i);
+                mainPrev.setImageBitmap(ScanAwayUtils.changeBitmapContrastBrightness(testPrev, contrastValue, 0));
             }
         });
 
@@ -95,9 +93,7 @@ public class FilterActivity extends AppCompatActivity {
             @Override
             public void invoke(int i) {
                 float brightnessValue = ScanAwayUtils.brightnessConversion(i);
-                mainPrev.setImageBitmap(ScanAwayUtils.changeBitmapContrastBrightness(testPrev,1,brightnessValue));
-                Log.i("brightness",String.valueOf(brightnessValue));
-                Log.i("brightness old",String.valueOf(i));
+                mainPrev.setImageBitmap(ScanAwayUtils.changeBitmapContrastBrightness(testPrev, 1, brightnessValue));
             }
         });
 
@@ -110,65 +106,37 @@ public class FilterActivity extends AppCompatActivity {
         prev.add(findViewById(R.id.filter6));
 
 
-//        File file = new File(scan.get(0));
-//        Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-//        mainPrev.setImageBitmap(myBitmap);
 
+        original = cropped.get(0);
 
         for (int i = 0; i < prev.size(); i++) {
             final int current = i;
-
             prev.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    contrast.setProgress(100);
+                    brightness.setProgress(500);
                     selectPrev(current, filters);
+                    checkFilter = current;
                     mainPrev.setImageBitmap(filters.get(current));
                     testPrev = filters.get(current);
+
                 }
             });
         }
 
 
 
-        original = BitmapFactory.decodeResource(getResources(), R.drawable.t);
         testPrev = original;
         mainPrev.setImageBitmap(testPrev);
-        filters.add(BitmapFactory.decodeResource(getResources(), R.drawable.t));
-        grayMat = new Mat();
-        originalMat = new Mat();
-        thresh = new Mat();
-        thresh2 = new Mat();
-        thresh3 = new Mat();
-        thresh4 = new Mat();
 
-
-        Utils.bitmapToMat(filters.get(0), originalMat);
-        Imgproc.cvtColor(originalMat, grayMat, Imgproc.COLOR_BGR2GRAY);
-        Imgproc.adaptiveThreshold(grayMat, thresh, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 15);
-        Imgproc.adaptiveThreshold(grayMat, thresh2, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, 2);
-        Imgproc.threshold(grayMat, thresh3, 0, 255, Imgproc.THRESH_BINARY + Imgproc.THRESH_OTSU);
-        Imgproc.threshold(grayMat, thresh4, 120, 255, Imgproc.THRESH_BINARY_INV);
-
-
-        filters.add(BitmapFactory.decodeResource(getResources(), R.drawable.t));
-        filters.add(BitmapFactory.decodeResource(getResources(), R.drawable.t));
-        filters.add(BitmapFactory.decodeResource(getResources(), R.drawable.t));
-        filters.add(BitmapFactory.decodeResource(getResources(), R.drawable.t));
-        filters.add(BitmapFactory.decodeResource(getResources(), R.drawable.t));
-
-        Utils.matToBitmap(grayMat, filters.get(1));
-        Utils.matToBitmap(thresh, filters.get(2));
-        Utils.matToBitmap(thresh2, filters.get(3));
-        Utils.matToBitmap(thresh3, filters.get(4));
-        Utils.matToBitmap(thresh4, filters.get(5));
-
-
-        prev.get(0).setImageBitmap(filters.get(0));
-        prev.get(1).setImageBitmap(filters.get(1));
-        prev.get(2).setImageBitmap(filters.get(2));
-        prev.get(3).setImageBitmap(filters.get(3));
-        prev.get(4).setImageBitmap(filters.get(4));
-        prev.get(5).setImageBitmap(filters.get(5));
+        for (int pre = 0; pre < 6; pre++) {
+            filters.add(ScanAwayUtils.filter(original.copy(original.getConfig(),true), "filter" + String.valueOf(pre)));
+            if (pre == 0) {
+                prev.get(pre).setBorderColor(getResources().getColor(R.color.soft_orange));
+            }
+            prev.get(pre).setImageBitmap(filters.get(pre));
+        }
 
 
     }
@@ -183,6 +151,104 @@ public class FilterActivity extends AppCompatActivity {
             }
             prev.get(p).setImageBitmap(bitmap.get(p));
 
+        }
+    }
+
+    public void saveScan() throws IOException {
+
+
+        ArrayList<Bitmap> bitmaps = new ArrayList<>();
+        for(Bitmap bitmap: cropped)
+        {
+            bitmaps.add(ScanAwayUtils.addWhiteBorder(ScanAwayUtils.filteredResult(bitmap,checkFilter,contrast.getProgress(),brightness.getProgress()),40));
+
+        }
+        ArrayList<File> files = ScanAwayUtils.bitmapsToFiles(this,bitmaps,"ScanAway");
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("שמירת סריקה");
+        builder.setMessage("הכנס שם לקובץ הסריקה");
+        builder.setCancelable(true);
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT );
+        builder.setView(input);
+
+        builder.setPositiveButton("אישור", null);
+        builder.setNegativeButton("ביטול", null);
+        AlertDialog dialog = builder.show();
+        Button pos = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button neg = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        pos.setOnClickListener(view1 -> {
+            String fileName = input.getText().toString().trim();
+            if(TextUtils.isEmpty(fileName)){
+                input.setError("אנא הכנס שם לקובץ הסריקה");
+            } else {
+                ScanAwayUtils.savePfd(this,files,fileName);
+                dialog.dismiss();
+            }
+        });
+
+        neg.setOnClickListener(view1 -> {
+                dialog.cancel();
+        });
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.save_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.action_save) {
+            try {
+                saveScan();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private class MyTaskFilter extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            while(cropped.contains(null))
+            {
+
+            }
+
+            return null;
+        }
+
+        // Runs in UI before background thread is called
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.setTitle("טוען");
+            dialog.setMessage("אנא המתן");
+            dialog.setCancelable(false);
+            dialog.show();
+            // Do something like display a progress bar
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(dialog.isShowing()) {
+                dialog.dismiss();
+            }
         }
     }
 
