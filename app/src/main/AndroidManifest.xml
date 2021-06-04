@@ -28,7 +28,9 @@
         <activity android:name=".Welcome" />
         <activity
             android:name=".MainActivity"
-            android:label="Dashboard">
+            android:label="Dashboard"
+            android:theme="@style/ScanAwaySplash"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

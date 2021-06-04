@@ -161,6 +161,7 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
 
         Toast.makeText(context, "Pdf נשמר ב - " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
 
+        MainActivity.checkFilterActivity = true;
         Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
         ((Activity)context).finish();

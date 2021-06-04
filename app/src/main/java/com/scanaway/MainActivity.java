@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,8 +33,9 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ItemTouchHelper itemTouchHelper;
     FloatingActionButton scan;
-    ImageButton gallery;
     ProgressDialog dialog;
+    ImageButton gallery;
+    static boolean checkFilterActivity = false;
     ArrayList<File> fileList = new ArrayList<>();
     ArrayList<Scan> scanList = new ArrayList<>();
 
@@ -45,27 +49,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        gallery = findViewById(R.id.gallery);
         dialog = new ProgressDialog(this);
-        scan = findViewById(R.id.go_to_scan);
-
-        scan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), ScanActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-
 
         fileList = ScanAwayUtils.getAllFiles(path);
         if(!fileList.isEmpty()) {
-            new MyTaskMain().execute();
+            new MyTaskMain(this).execute();
         }
+
     }
 
 
@@ -96,6 +87,12 @@ public class MainActivity extends AppCompatActivity {
 
     private class MyTaskMain extends AsyncTask<Void, Void, Void> {
 
+        Context context;
+
+        public MyTaskMain(Context ctx) {
+            this.context = ctx;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             for(File f: fileList)
@@ -110,23 +107,51 @@ public class MainActivity extends AppCompatActivity {
         // Runs in UI before background thread is called
         @Override
         protected void onPreExecute() {
+
+            if(checkFilterActivity){
+                setTheme(R.style.Theme_ScanAway);
+                dialog.setTitle("טוען");
+                dialog.setMessage("אנא המתן");
+                dialog.show();
+            }
             super.onPreExecute();
-            dialog.setTitle("טוען");
-            dialog.setMessage("אנא המתן");
-            dialog.setCancelable(false);
-            dialog.show();
-            // Do something like display a progress bar
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+
             super.onPostExecute(aVoid);
+            if(dialog.isShowing())
+            {
+                dialog.dismiss();
+            }
+            setTheme(R.style.Theme_ScanAway);
+            getWindow().setBackgroundDrawableResource(R.drawable.clean_background);
+            setContentView(R.layout.activity_main);
+
+            gallery = findViewById(R.id.gallery);
+            scan = findViewById(R.id.go_to_scan);
+            scan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getBaseContext(), ScanActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            gallery.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
 
             init();
             generateItems();
-            if(dialog.isShowing()) {
-                dialog.dismiss();
-            }
+            checkFilterActivity = false;
+
+
+
         }
     }
 
