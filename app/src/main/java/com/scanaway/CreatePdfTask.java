@@ -101,7 +101,7 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
 
 
                         Image image = Image.getInstance(f.getAbsolutePath());
-                        image.setAlignment(Image.ALIGN_CENTER | Image.ALIGN_TOP);
+                        image.setAlignment( Image.ALIGN_CENTER|Image.ALIGN_MIDDLE);
                         float aspectRatio;
                         float h1 = files.get(i).getHeight();
                         float w1 = files.get(i).getWidth();
@@ -133,12 +133,6 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
                     }
                 } else {
                     document.close();
-                    ScanAwayUtils.deleteRecursive(new File(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DCIM) +
-                            File.separator + "ScanAway"));
-                    ScanAwayUtils.deleteRecursive(new File(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DCIM) +
-                            File.separator + "ScanAwayTemp"));
                     return outputMediaFile;
                 }
 

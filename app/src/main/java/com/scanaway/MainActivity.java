@@ -26,7 +26,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 import Adapter.MyRecyclerAdapterMain;
-import Adapter.ScanImage;
 import Helper.MyItemTouchHelperCallback;
 import Helper.OnStartDragListener;
 import Adapter.Scan;
@@ -62,9 +61,7 @@ public class MainActivity extends AppCompatActivity {
         dialog = new ProgressDialog(this);
 
         fileList = ScanAwayUtils.getAllFiles(path);
-        if (!fileList.isEmpty()) {
-            new MyTaskMain(this).execute();
-        }
+        new MyTaskMain(this).execute();
 
     }
 
@@ -117,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-
                 PagingActivity.images = bitmaps;
                 Intent intent = new Intent(getBaseContext(), PagingActivity.class);
                 startActivity(intent);
@@ -142,10 +138,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            for (File f : fileList) {
 
-                scanList.add(new Scan(ScanAwayUtils.pdfToBitmap(f, getBaseContext()), f.getName().split("_")[0], f));
+            if(!fileList.isEmpty()) {
+                for (File f : fileList) {
+                    scanList.add(new Scan(ScanAwayUtils.pdfToBitmap(f, getBaseContext(), 1), f.getName().split("_")[0], f));
 
+                }
             }
             return null;
         }

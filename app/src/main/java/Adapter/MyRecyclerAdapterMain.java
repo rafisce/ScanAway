@@ -3,6 +3,8 @@ package Adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,7 @@ implements ItemTouchHelperAdapter {
         this.ctx = ctx;
         this.scans = scans;
         this.listener = listener;
+
     }
 
     @NonNull
@@ -73,6 +76,20 @@ implements ItemTouchHelperAdapter {
                 Intent intent = new Intent(ctx, ViewPdf.class);
                 intent.putExtra("path",scans.get(position).getFile().getAbsolutePath());
                 ctx.startActivity(intent);
+
+            }
+        });
+
+        holder.share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                StrictMode.setVmPolicy(builder.build());
+                Intent intentShare = new Intent(Intent.ACTION_SEND);
+                intentShare.setType("application/pdf");
+                intentShare.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:/."+scans.get(position).getFile()));
+                ctx.startActivity(Intent.createChooser(intentShare,"שיתוף קובץ"));
 
             }
         });

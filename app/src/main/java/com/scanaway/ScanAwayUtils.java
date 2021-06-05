@@ -91,7 +91,7 @@ public class ScanAwayUtils {
         return new_value;
     }
 
-    public static ArrayList<Bitmap> pdfToBitmap(File pdfFile, Context ctx) {
+    public static ArrayList<Bitmap> pdfToBitmap(File pdfFile, Context ctx, int pagesNeeded) {
         ArrayList<Bitmap> bitmaps = new ArrayList<>();
 
         try {
@@ -99,19 +99,20 @@ public class ScanAwayUtils {
 
             Bitmap bitmap;
             final int pageCount = renderer.getPageCount();
-            for (int i = 0; i < pageCount; i++) {
-                PdfRenderer.Page page = renderer.openPage(i);
+            if (pageCount >= pagesNeeded) {
+                for (int i = 0; i < pagesNeeded; i++) {
+                    PdfRenderer.Page page = renderer.openPage(i);
+                    int width = ctx.getResources().getDisplayMetrics().densityDpi / 72 * page.getWidth();
+                    int height = ctx.getResources().getDisplayMetrics().densityDpi / 72 * page.getHeight();
+                    bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
-                int width = ctx.getResources().getDisplayMetrics().densityDpi / 72 * page.getWidth();
-                int height = ctx.getResources().getDisplayMetrics().densityDpi / 72 * page.getHeight();
-                bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                    page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
 
-                page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
+                    bitmaps.add(bitmap);
 
-                bitmaps.add(bitmap);
-
-                // close the page
-                page.close();
+                    // close the page
+                    page.close();
+                }
 
             }
 
@@ -155,16 +156,7 @@ public class ScanAwayUtils {
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
-    public static ArrayList<Bitmap> getBitmapsFromFiles(ArrayList<String> scan) {
-        ArrayList<Bitmap> bitmaps = new ArrayList<>();
-        for (String s : scan) {
-            File file = new File(s);
-            bitmaps.add(BitmapFactory.decodeFile(file.getAbsolutePath()));
-        }
-        return bitmaps;
-    }
-
-    public static ArrayList<File> bitmapsToFiles(Context ctx, ArrayList<Bitmap> bitmaps,String dirName) throws IOException {
+    public static ArrayList<File> bitmapsToFiles(Context ctx, ArrayList<Bitmap> bitmaps, String dirName) throws IOException {
 
         ArrayList<File> files = new ArrayList<>();
 
@@ -267,8 +259,7 @@ public class ScanAwayUtils {
 
     }
 
-    public static Bitmap rotateBitmap(Bitmap bitmap,int degree)
-    {
+    public static Bitmap rotateBitmap(Bitmap bitmap, int degree) {
         Matrix matrix = new Matrix();
 
         matrix.postRotate(degree);
@@ -280,20 +271,6 @@ public class ScanAwayUtils {
         return rotatedBitmap;
 
     }
-
-
-
-    public static void deleteRecursive(File fileOrDirectory) {
-
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                deleteRecursive(child);
-            }
-        }
-
-        fileOrDirectory.delete();
-    }
-
 
 
 }

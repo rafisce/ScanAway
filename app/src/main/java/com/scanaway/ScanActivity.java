@@ -282,8 +282,8 @@ public class ScanActivity extends AppCompatActivity {
 
     private void goToEdit() {
         if (!scans.isEmpty()) {
-            CropActivity.scans = scans;
-            Intent intent = new Intent(this, CropActivity.class);
+            PagingActivity.images = scans;
+            Intent intent = new Intent(this, PagingActivity.class);
             startActivity(intent);
             finish();
         }
