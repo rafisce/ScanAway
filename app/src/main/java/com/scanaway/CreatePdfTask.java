@@ -29,13 +29,13 @@ import java.util.Calendar;
 
 public class CreatePdfTask extends AsyncTask<String, Integer, File> {
     Context context;
-    ArrayList<File> files;
+    ArrayList<Bitmap> files;
     ProgressDialog progressDialog;
     String folder;
     String name;
 
 
-    public CreatePdfTask(Context context2, ArrayList<File> arrayList,String name) {
+    public CreatePdfTask(Context context2, ArrayList<Bitmap> arrayList,String name) {
         context = context2;
         files = arrayList;
         folder = Environment.getExternalStoragePublicDirectory(
@@ -72,7 +72,7 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
             File outputMediaFile = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOCUMENTS), "ScanAway/"+name+".pdf");
 
-            Document document = new Document(PageSize.A4, 0, 0, 0, 0);
+            Document document = new Document(PageSize.A4, 10f, 10f, 5f, 5f);
             try {
                 PdfWriter.getInstance(document, new FileOutputStream(outputMediaFile));
             } catch (DocumentException e) {
@@ -90,9 +90,9 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
 
                         File f = new File(context.getCacheDir(), "filename");
                         f.createNewFile();
-                        Bitmap bitmap = BitmapFactory.decodeFile(files.get(i).getAbsolutePath());
+
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos);
+                        files.get(i).compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos);
                         byte[] bitmapData = bos.toByteArray();
                         FileOutputStream fos = new FileOutputStream(f);
                         fos.write(bitmapData);
@@ -101,14 +101,25 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
 
 
                         Image image = Image.getInstance(f.getAbsolutePath());
-
-                        float scalar = ((document.getPageSize().getWidth() - document.leftMargin()
-                                - document.rightMargin() - 0) / image.getWidth()) * 100; // 0 means you have no indentation. If you have any, change it.
-                        image.scalePercent(scalar);
                         image.setAlignment(Image.ALIGN_CENTER | Image.ALIGN_TOP);
-                        image.setAbsolutePosition((document.getPageSize().getWidth() - image.getScaledWidth()) / 2.0f,
-                                (document.getPageSize().getHeight() - image.getScaledHeight()) / 2.0f);
+                        float aspectRatio;
+                        float h1 = files.get(i).getHeight();
+                        float w1 = files.get(i).getWidth();
 
+                        if(w1<h1)
+                        {
+                            float h2 = document.getPageSize().getHeight();
+
+                            aspectRatio = h2/h1;
+                        }
+                        else
+                        {
+                            float w2 = document.getPageSize().getWidth();
+                            aspectRatio = w2/w1;
+                        }
+
+
+                        image.scaleToFit(w1*aspectRatio,h1*aspectRatio);
                         document.add(image);
                         document.newPage();
                         publishProgress(i);

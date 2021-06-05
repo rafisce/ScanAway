@@ -32,6 +32,7 @@ public class CropActivity extends AppCompatActivity {
 
 
     int imagesCount = 0;
+    Bitmap cropped;
     ImageView confirm, rRight, rLeft, crop;
     CropImageView cropImageView;
     ArrayList<Bitmap> croppedImages = new ArrayList<>();
@@ -63,36 +64,36 @@ public class CropActivity extends AppCompatActivity {
         rRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cropImageView.rotateImage(90);
+                scans.set(imagesCount,ScanAwayUtils.rotateBitmap(scans.get(imagesCount),90));
+                cropImageView.setImageBitmap(scans.get(imagesCount));
             }
         });
         rLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                cropImageView.rotateImage(-90);
-
+                scans.set(imagesCount,ScanAwayUtils.rotateBitmap(scans.get(imagesCount),-90));
+                cropImageView.setImageBitmap(scans.get(imagesCount));
             }
         });
         crop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Bitmap cropped = cropImageView.getCroppedImage();
+                cropped = cropImageView.getCroppedImage();
+                scans.set(imagesCount,cropped);
                 cropImageView.setImageBitmap(cropped);
 
             }
         });
 
 
-
         if (scans.size() == 1) {
             confirm.setImageResource(R.drawable.ic_check);
         }
-        cropImageView = (CropImageView) findViewById(R.id.cropImageView);
+        cropImageView = findViewById(R.id.cropImageView);
         cropImageView.setAutoZoomEnabled(true);
         cropImageView.setShowProgressBar(true);
-        cropImageView.setScaleType(CropImageView.ScaleType.CENTER_CROP);
         cropImageView.setImageBitmap(scans.get(imagesCount));
 
     }
@@ -104,11 +105,11 @@ public class CropActivity extends AppCompatActivity {
 
     private void cropNext() throws IOException, InterruptedException {
 
-        if (imagesCount <= scans.size() - 2 && scans.size() != 1) {
+        if (imagesCount < scans.size() - 1 && scans.size() != 1) {
 
-            croppedImages.add(cropImageView.getCroppedImage());
-            cropImageView.setImageBitmap(scans.get(imagesCount));
             imagesCount++;
+            cropImageView.setImageBitmap(scans.get(imagesCount));
+
 
             if (imagesCount == scans.size() - 1) {
                 confirm.setImageResource(R.drawable.ic_check);
@@ -124,7 +125,7 @@ public class CropActivity extends AppCompatActivity {
 
     public void goToFiltering() {
 
-        FilterActivity.cropped = croppedImages;
+        FilterActivity.cropped = scans;
         Intent intent = new Intent(getBaseContext(), FilterActivity.class);
         startActivity(intent);
         finish();

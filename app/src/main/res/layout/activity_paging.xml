@@ -4,12 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-
+    tools:context=".PagingActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_main"
+        android:id="@+id/recycler_view_paging"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp"
@@ -20,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/appbar"
+        android:backgroundTint="@color/purple_200"
         android:contentInsetStart="0dp"
         android:contentInsetLeft="0dp"
         android:contentInsetEnd="0dp"
@@ -37,12 +35,12 @@
 
 
             <ImageButton
-                android:id="@+id/gallery"
+                android:id="@+id/add_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
                 android:soundEffectsEnabled="true"
-                android:src="@drawable/ic_photo"
+                android:src="@drawable/add_photos"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/check"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -62,7 +60,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/gallery"
+                app:layout_constraintStart_toEndOf="@+id/add_photo"
                 app:layout_constraintTop_toTopOf="@id/cl"
                 app:layout_constraintVertical_bias="0.83">
 
@@ -72,13 +70,12 @@
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/go_to_scan"
+        android:id="@+id/go_to_crop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:soundEffectsEnabled="true"
-        android:src="@drawable/ic_scanner"
+        android:src="@drawable/check_circle"
         app:layout_anchor="@id/bottomAppBar"
-
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

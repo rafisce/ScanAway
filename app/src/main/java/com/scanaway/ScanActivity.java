@@ -265,7 +265,7 @@ public class ScanActivity extends AppCompatActivity {
 
             Bitmap scan = BitmapFactory.decodeFile(file.getAbsolutePath());
             scans.add(scan);
-            lastPage.setImageBitmap(ScanAwayUtils.rotateBitmap(scan));
+            lastPage.setImageBitmap(ScanAwayUtils.rotateBitmap(scan,90));
             imageCount.setText(String.valueOf(count));
             imageCount.setVisibility(View.VISIBLE);
             lastPage.setAlpha(255);

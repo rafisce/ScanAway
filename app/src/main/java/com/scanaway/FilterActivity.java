@@ -6,10 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
@@ -32,8 +29,6 @@ import org.opencv.android.OpenCVLoader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import Helper.Scan;
 
 public class FilterActivity extends AppCompatActivity {
 
@@ -160,7 +155,7 @@ public class FilterActivity extends AppCompatActivity {
         ArrayList<Bitmap> bitmaps = new ArrayList<>();
         for(Bitmap bitmap: cropped)
         {
-            bitmaps.add(ScanAwayUtils.addWhiteBorder(ScanAwayUtils.filteredResult(bitmap,checkFilter,contrast.getProgress(),brightness.getProgress()),40));
+            bitmaps.add(ScanAwayUtils.filteredResult(bitmap,checkFilter,contrast.getProgress(),brightness.getProgress()));
 
         }
         ArrayList<File> files = ScanAwayUtils.bitmapsToFiles(this,bitmaps,"ScanAway");
@@ -185,7 +180,7 @@ public class FilterActivity extends AppCompatActivity {
             if(TextUtils.isEmpty(fileName)){
                 input.setError("אנא הכנס שם לקובץ הסריקה");
             } else {
-                ScanAwayUtils.savePfd(this,files,fileName);
+                ScanAwayUtils.savePfd(this,cropped,fileName);
                 dialog.dismiss();
             }
         });

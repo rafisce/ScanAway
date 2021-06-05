@@ -42,7 +42,7 @@ public class ScanAwayUtils {
         }
     }
 
-    public static void savePfd(Context ctx, ArrayList<File> imgList, String name) {
+    public static void savePfd(Context ctx, ArrayList<Bitmap> imgList, String name) {
 
         new CreatePdfTask(ctx, imgList, name).execute();
 
@@ -267,11 +267,11 @@ public class ScanAwayUtils {
 
     }
 
-    public static Bitmap rotateBitmap(Bitmap bitmap)
+    public static Bitmap rotateBitmap(Bitmap bitmap,int degree)
     {
         Matrix matrix = new Matrix();
 
-        matrix.postRotate(90);
+        matrix.postRotate(degree);
 
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
 
@@ -281,13 +281,7 @@ public class ScanAwayUtils {
 
     }
 
-    public static Bitmap addWhiteBorder(Bitmap bmp, int borderSize) {
-        Bitmap bmpWithBorder = Bitmap.createBitmap(bmp.getWidth() + borderSize * 2, bmp.getHeight() + borderSize * 2, bmp.getConfig());
-        Canvas canvas = new Canvas(bmpWithBorder);
-        canvas.drawColor(Color.WHITE);
-        canvas.drawBitmap(bmp, borderSize, borderSize, null);
-        return bmpWithBorder;
-    }
+
 
     public static void deleteRecursive(File fileOrDirectory) {
 

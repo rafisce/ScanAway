@@ -1,6 +1,7 @@
 package Helper;
 
 import android.graphics.Canvas;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -15,6 +16,7 @@ public class MyItemTouchHelperCallback extends ItemTouchHelper.Callback{
     public MyItemTouchHelperCallback(ItemTouchHelperAdapter adapter) {
         this.adapter = adapter;
     }
+
 
     @Override
     public boolean isLongPressDragEnabled() {
@@ -46,18 +48,21 @@ public class MyItemTouchHelperCallback extends ItemTouchHelper.Callback{
     @Override
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
 
+
+
         if(viewHolder.getItemViewType()!=target.getItemViewType())
         {
             return false;
         }
         adapter.onItemMove(viewHolder.getAdapterPosition(),target.getAdapterPosition());
+
+
         return true;
     }
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         adapter.onItemDismiss(viewHolder.getAdapterPosition());
-
     }
 
     @Override
@@ -70,6 +75,7 @@ public class MyItemTouchHelperCallback extends ItemTouchHelper.Callback{
             ItemTouchHelperViewHolder itemTouchHelperViewHolder = (ItemTouchHelperViewHolder) viewHolder;
             itemTouchHelperViewHolder.onItemClear();
         }
+       adapter.onSwapped();
     }
 
     @Override
@@ -80,6 +86,7 @@ public class MyItemTouchHelperCallback extends ItemTouchHelper.Callback{
             final float alpha = ALPHA_FULL - Math.abs(dX)/(float)viewHolder.itemView.getWidth();
             viewHolder.itemView.setAlpha(alpha);
             viewHolder.itemView.setTranslationX(dX);
+            Log.i("kkk","3");
         }
         else
         {
