@@ -5,27 +5,21 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.widget.Toast;
-
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
-import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+
 
 public class CreatePdfTask extends AsyncTask<String, Integer, File> {
     Context context;
@@ -35,12 +29,12 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
     String name;
 
 
-    public CreatePdfTask(Context context2, ArrayList<Bitmap> arrayList,String name) {
+    public CreatePdfTask(Context context2, ArrayList<Bitmap> arrayList, String name) {
         context = context2;
         files = arrayList;
         folder = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS).getAbsolutePath() + "/ScanAway";
-        this.name=name;
+        this.name = name;
 
     }
 
@@ -70,9 +64,9 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
         if (success) {
 
             File outputMediaFile = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOCUMENTS), "ScanAway/"+name+".pdf");
+                    Environment.DIRECTORY_DOCUMENTS), "ScanAway/" + name + ".pdf");
 
-            Document document = new Document(PageSize.A4, 10f, 10f, 5f, 5f);
+            Document document = new Document();
             try {
                 PdfWriter.getInstance(document, new FileOutputStream(outputMediaFile));
             } catch (DocumentException e) {
@@ -101,25 +95,16 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
 
 
                         Image image = Image.getInstance(f.getAbsolutePath());
-                        image.setAlignment( Image.ALIGN_CENTER|Image.ALIGN_MIDDLE);
-                        float aspectRatio;
-                        float h1 = files.get(i).getHeight();
-                        float w1 = files.get(i).getWidth();
+                        image.setAlignment(Image.ALIGN_CENTER | Image.ALIGN_MIDDLE);
 
-                        if(w1<h1)
-                        {
-                            float h2 = document.getPageSize().getHeight();
+                        float scale = Math.min(document.getPageSize().getWidth() / image.getWidth(), document.getPageSize().getHeight() / image.getHeight());
+                        float width = image.getWidth() * scale * 0.98f;
+                        float height = image.getHeight() * scale * 0.98f;
+                        float newWidth = (document.getPageSize().getWidth()-width) / 2f;
+                        float newHeight = (document.getPageSize().getHeight() - height) / 2f;
 
-                            aspectRatio = h2/h1;
-                        }
-                        else
-                        {
-                            float w2 = document.getPageSize().getWidth();
-                            aspectRatio = w2/w1;
-                        }
-
-
-                        image.scaleToFit(w1*aspectRatio,h1*aspectRatio);
+                        image.scaleToFit(width, height);
+                        image.setAbsolutePosition(newWidth, newHeight);
                         document.add(image);
                         document.newPage();
                         publishProgress(i);
@@ -165,11 +150,10 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
         progressDialog.dismiss();
 
         Toast.makeText(context, "Pdf נשמר ב - " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-
         MainActivity.checkFilterActivity = true;
         Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
-        ((Activity)context).finish();
+        ((Activity) context).finish();
 
     }
 }
