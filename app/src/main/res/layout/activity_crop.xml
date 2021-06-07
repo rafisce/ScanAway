@@ -9,15 +9,18 @@
    <com.theartofdev.edmodo.cropper.CropImageView
        android:id="@+id/cropImageView"
        android:layout_width="match_parent"
-       android:layout_height="0dp"
+       android:layout_height="match_parent"
        app:cropBorderCornerColor="@color/purple_500"
-       app:cropBorderLineThickness="0.1px"
+       app:cropBorderLineThickness="0.1dp"
        app:cropGuidelines="off"
        app:cropScaleType="fitCenter"
-       app:layout_constraintBottom_toTopOf="@+id/crop_actions"
+       app:layout_constraintBottom_toBottomOf="parent"
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toTopOf="parent" />
+       app:layout_constraintTop_toTopOf="parent"
+       android:contentDescription="image preview"
+android:background="@color/purple_200"
+       />
 
    <androidx.constraintlayout.widget.ConstraintLayout
        android:id="@+id/crop_actions"
@@ -30,50 +33,58 @@
        app:layout_constraintTop_toTopOf="parent"
        app:layout_constraintVertical_bias="1.0">
 
-      <ImageView
+      <ImageButton
           android:id="@+id/confirm_crop"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:background="@color/transparent"
           android:src="@drawable/ic_navigate_next"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintHorizontal_bias="0.5"
           app:layout_constraintStart_toEndOf="@+id/rotate_right"
-          app:layout_constraintTop_toTopOf="parent" />
+          app:layout_constraintTop_toTopOf="parent"
+          android:contentDescription="@string/confirm_button"
+         />
 
-      <ImageView
+      <ImageButton
           android:id="@+id/rotate_right"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:background="@color/transparent"
           android:src="@drawable/ic_rotate_right"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toStartOf="@id/confirm_crop"
           app:layout_constraintHorizontal_bias="0.5"
           app:layout_constraintStart_toEndOf="@+id/crop"
-          app:layout_constraintTop_toTopOf="parent" />
+          app:layout_constraintTop_toTopOf="parent"
+          android:contentDescription="@string/rotating_right_button" />
 
-      <ImageView
+      <ImageButton
           android:id="@+id/crop"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:background="@color/transparent"
           android:src="@drawable/ic_crop"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toStartOf="@+id/rotate_right"
           app:layout_constraintHorizontal_bias="0.5"
           app:layout_constraintStart_toEndOf="@id/rotate_left"
-          app:layout_constraintTop_toTopOf="parent" />
+          app:layout_constraintTop_toTopOf="parent"
+          android:contentDescription="@string/crop_button" />
 
-      <ImageView
+      <ImageButton
           android:id="@+id/rotate_left"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:background="@color/transparent"
           android:src="@drawable/ic_rotate_left"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toStartOf="@id/crop"
           app:layout_constraintHorizontal_bias="0.5"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
-          />
+          android:contentDescription="@string/rotating_left_button" />
 
 
    </androidx.constraintlayout.widget.ConstraintLayout>

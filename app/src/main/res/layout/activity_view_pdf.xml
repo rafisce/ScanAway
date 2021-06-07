@@ -4,14 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewPdf">
-
-
+    tools:context=".ViewPdf"
+    android:background="@color/purple_200"
+    >
     <com.github.barteksc.pdfviewer.PDFView
     android:id="@+id/pdfView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

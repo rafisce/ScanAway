@@ -42,8 +42,8 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
     protected void onPreExecute() {
         super.onPreExecute();
         progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle("Please wait...");
-        progressDialog.setMessage("Creating pdf...");
+        progressDialog.setTitle("אנא המתן");
+        progressDialog.setMessage("יוצר קובץ pdf...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setIndeterminate(false);
         progressDialog.setMax(100);

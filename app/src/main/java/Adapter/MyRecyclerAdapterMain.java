@@ -23,6 +23,7 @@ import com.scanaway.ViewPdf;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 import Helper.ItemTouchHelperAdapter;
 import Helper.OnStartDragListener;
@@ -57,7 +58,6 @@ implements ItemTouchHelperAdapter {
         holder.scanName.setText(scans.get(position).getName());
         holder.scanDate.setText(scans.get(position).getDate());
         holder.scanImg.setImageBitmap(scans.get(position).getBitmap());
-
         holder.item.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -147,6 +147,30 @@ implements ItemTouchHelperAdapter {
     public void onSwapped() {
 
     }
+
+    public void byName()
+    {
+        Collections.sort(scans, new Comparator<Scan>() {
+            @Override
+            public int compare(Scan o1, Scan o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+
+        });
+        notifyDataSetChanged();
+    }
+    public void byDate()
+    {
+        Collections.sort(scans, new Comparator<Scan>() {
+            @Override
+            public int compare(Scan o1, Scan o2) {
+                return o1.getDate2().compareTo(o2.getDate2());
+            }
+
+        });
+        notifyDataSetChanged();
+    }
+
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder{

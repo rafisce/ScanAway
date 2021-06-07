@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">ScanAway</string>
+    <string name="percentage">100%</string>
+    <string name="preview_of_scan">preview of scan</string>
+    <string name="rotating_right_button">rotating right button</string>
+    <string name="rotating_left_button">rotating left button</string>
+    <string name="crop_button">crop button</string>
+    <string name="confirm_button">confirm button</string>
+    <string name="go_to_crop_button">go to crop button</string>
+    <string name="add_photos_button">add photos button</string>
+    <string name="check_button">check button</string>
+    <string name="flash_button">flash button</string>
+    <string name="last_picture_take_preview">last picture take preview</string>
+    <string name="capture_picture_button">capture picture button</string>
+    <string name="delete_scan_button">delete scan button</string>
+    <string name="delete_page_button">delete page button</string>
+    <string name="share_scan_button">share scan button</string>
+
 </resources>

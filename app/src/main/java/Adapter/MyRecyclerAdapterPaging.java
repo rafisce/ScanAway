@@ -19,6 +19,8 @@ import com.scanaway.R;
 import com.scanaway.ScanAwayUtils;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+
 import Helper.ItemTouchHelperAdapter;
 import Helper.OnStartDragListener;
 import butterknife.BindView;
@@ -139,6 +141,19 @@ public class MyRecyclerAdapterPaging extends RecyclerView.Adapter<MyRecyclerAdap
         notifyDataSetChanged();
 
     }
+
+    public void addItems(ArrayList<Bitmap> bitmapsToAdd){
+
+        for(Bitmap bitmapToAdd:bitmapsToAdd)
+        {
+            scans.add(bitmapToAdd);
+        }
+
+        notifyDataSetChanged();
+    }
+
+
+
 
 
 

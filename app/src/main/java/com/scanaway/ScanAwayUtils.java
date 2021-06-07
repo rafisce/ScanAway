@@ -4,43 +4,25 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.pdf.PdfRenderer;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
-
+import androidx.camera.core.ImageProxy;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.UUID;
-
 import static org.opencv.imgproc.Imgproc.ADAPTIVE_THRESH_MEAN_C;
 import static org.opencv.imgproc.Imgproc.THRESH_BINARY;
 
 public class ScanAwayUtils {
 
-    public static void deleteFolderContent(File folder) {
-        if (folder.exists()) {
-            String[] children = folder.list();
-            for (int i = 0; i < children.length; i++) {
-                new File(folder, children[i]).delete();
-            }
-        }
-    }
 
     public static void savePfd(Context ctx, ArrayList<Bitmap> imgList, String name) {
 
@@ -156,49 +138,6 @@ public class ScanAwayUtils {
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
-    public static ArrayList<File> bitmapsToFiles(Context ctx, ArrayList<Bitmap> bitmaps, String dirName) throws IOException {
-
-        ArrayList<File> files = new ArrayList<>();
-
-        boolean checkContentDelete = true;
-        for (Bitmap bm : bitmaps) {
-
-            File dir = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DCIM) +
-                    File.separator + dirName);
-            boolean success = true;
-
-            if (!dir.exists()) {
-                success = dir.mkdirs();
-            } else if (checkContentDelete) {
-                ScanAwayUtils.deleteFolderContent(dir);
-                checkContentDelete = false;
-            }
-
-            if (success) {
-
-                File file = new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DCIM), dirName + "/ScanAway_" + UUID.randomUUID().toString() + ".jpg");
-                try {
-
-                    FileOutputStream out = new FileOutputStream(file);
-                    bm.compress(Bitmap.CompressFormat.JPEG, 90, out);
-                    out.flush();
-                    out.close();
-                    files.add(file);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                }
-
-
-            }
-
-        }
-        return files;
-    }
-
     public static Bitmap filter(Bitmap bitmap, String filter) {
         Bitmap bitmap1 = bitmap;
         Mat originalMat, grayMat, thresh, thresh2, thresh3, thresh4;
@@ -270,6 +209,15 @@ public class ScanAwayUtils {
 
         return rotatedBitmap;
 
+    }
+
+    public static Bitmap getBitmap(ImageProxy image) {
+        ByteBuffer buffer = image.getPlanes()[0].getBuffer();
+        buffer.rewind();
+        byte[] bytes = new byte[buffer.capacity()];
+        buffer.get(bytes);
+        byte[] clonedBytes = bytes.clone();
+        return BitmapFactory.decodeByteArray(clonedBytes, 0, clonedBytes.length);
     }
 
 

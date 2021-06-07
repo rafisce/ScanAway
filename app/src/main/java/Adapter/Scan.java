@@ -57,4 +57,10 @@ public class Scan {
     public void setFile(File file) {
         this.file = file;
     }
+
+    public Date getDate2()
+    {
+        return new Date(file.lastModified());
+    }
+
 }

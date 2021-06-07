@@ -50,12 +50,14 @@
         android:id="@+id/main_prev"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scaleType="fitCenter"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toTopOf="@id/prev_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.0"
+        android:contentDescription="@string/preview_of_scan">
+
 
     </ImageView>
 
@@ -72,94 +74,112 @@
 
 
         <LinearLayout
-            android:background="@color/purple_200"
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/purple_200"
+            android:orientation="horizontal"
+            android:weightSum="6"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:orientation="horizontal"
-            android:weightSum="6"
-
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.makeramen.roundedimageview.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
                 android:id="@+id/filter1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:scaleType="fitXY"
-                app:riv_corner_radius="10dp"
-                app:riv_border_width="3dip"
                 app:riv_border_color="@color/purple_200"
-                android:layout_weight="1"
-                />
+                app:riv_border_width="3dip"
+                app:riv_corner_radius="10dp" />
+
             <com.makeramen.roundedimageview.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
                 android:id="@+id/filter2"
-                android:scaleType="fitXY"
-                app:riv_corner_radius="10dp"
-                app:riv_border_width="3dip"
-                app:riv_border_color="@color/transparent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                />
+                android:scaleType="fitXY"
+                app:riv_border_color="@color/transparent"
+                app:riv_border_width="3dip"
+                app:riv_corner_radius="10dp" />
 
 
             <com.makeramen.roundedimageview.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
                 android:id="@+id/filter3"
-                android:scaleType="fitXY"
-                app:riv_corner_radius="10dp"
-                app:riv_border_width="3dip"
-                app:riv_border_color="@color/transparent"
-                android:layout_weight="1"
-                />
-            <com.makeramen.roundedimageview.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                app:riv_border_color="@color/transparent"
+                app:riv_border_width="3dip"
+                app:riv_corner_radius="10dp" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/filter4"
-                android:scaleType="fitXY"
-                app:riv_corner_radius="10dp"
-                app:riv_border_width="3dip"
-                app:riv_border_color="@color/transparent"
-                android:layout_weight="1"
-                />
-            <com.makeramen.roundedimageview.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                app:riv_border_color="@color/transparent"
+                app:riv_border_width="3dip"
+                app:riv_corner_radius="10dp" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/filter5"
-                android:scaleType="fitXY"
-                app:riv_corner_radius="10dp"
-                app:riv_border_width="3dip"
-                app:riv_border_color="@color/transparent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                />
+                android:scaleType="fitXY"
+                app:riv_border_color="@color/transparent"
+                app:riv_border_width="3dip"
+                app:riv_corner_radius="10dp" />
 
 
             <com.makeramen.roundedimageview.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
                 android:id="@+id/filter6"
-                android:scaleType="fitXY"
-                app:riv_corner_radius="10dp"
-                app:riv_border_width="3dip"
-                app:riv_border_color="@color/transparent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                />
-
-
+                android:scaleType="fitXY"
+                app:riv_border_color="@color/transparent"
+                app:riv_border_width="3dip"
+                app:riv_corner_radius="10dp" />
 
         </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/percentage_b"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:textColor="@color/purple_200"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/main_prev"
+        app:layout_constraintEnd_toEndOf="@id/main_prev"
+        app:layout_constraintStart_toStartOf="@id/main_prev"
+        app:layout_constraintTop_toTopOf="@id/main_prev">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/percentage_c"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/purple_200"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/main_prev"
+        app:layout_constraintEnd_toEndOf="@id/main_prev"
+        app:layout_constraintStart_toStartOf="@id/main_prev"
+        app:layout_constraintTop_toBottomOf="@id/percentage_b"
+        app:layout_constraintVertical_bias="0.0">
+
+    </TextView>
 </androidx.constraintlayout.widget.ConstraintLayout>

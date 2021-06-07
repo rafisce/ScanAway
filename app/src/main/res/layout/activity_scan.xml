@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ScanActivity"
-    >
-    <TextureView
-        android:id="@+id/view_finder"
+    tools:context=".ScanActivity">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </TextureView>
+        android:layout_height="match_parent"></androidx.camera.view.PreviewView>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,17 +27,18 @@
             app:layout_constraintVertical_bias="0.05">
 
             <ImageView
-                android:scaleType="centerCrop"
                 android:id="@+id/last_page"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.92"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.05">
+                app:layout_constraintVertical_bias="0.05"
+                android:contentDescription="@string/last_picture_take_preview">
 
             </ImageView>
 
@@ -86,34 +86,37 @@
 
 
             <ImageButton
-                android:id="@+id/iv1"
+                android:id="@+id/flash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_photo"
                 android:background="@color/transparent"
                 android:soundEffectsEnabled="true"
+                android:src="@drawable/flash_off"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/check"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/flash_button"
+                >
 
             </ImageButton>
 
             <ImageButton
                 android:id="@+id/check"
-                android:background="@color/transparent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="150dp"
-                android:src="@drawable/ic_check"
+                android:background="@color/transparent"
                 android:soundEffectsEnabled="true"
+                android:src="@drawable/check_circle"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/iv1"
+                app:layout_constraintStart_toEndOf="@+id/flash"
                 app:layout_constraintTop_toTopOf="@id/cl"
-                app:layout_constraintVertical_bias="0.83">
+                app:layout_constraintVertical_bias="0.83"
+                android:contentDescription="@string/check_button">
 
             </ImageButton>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -128,73 +131,5 @@
         android:src="@drawable/ic_camera_24"
         app:layout_anchor="@id/bottomAppBar"
 
-        />
-
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/imageView"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        app:layout_constraintHeight_percent="0.5"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:layout_constraintWidth_percent="0.5"-->
-    <!--        />-->
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/imageView2"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHeight_percent="0.5"-->
-    <!--        app:layout_constraintStart_toEndOf="@+id/imageView"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:layout_constraintWidth_percent="0.5"-->
-    <!--        />-->
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/imageView3"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toStartOf="@+id/imageView4"-->
-    <!--        app:layout_constraintHeight_percent="0.5"-->
-    <!--        app:layout_constraintHorizontal_bias="1.0"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/imageView"-->
-    <!--        app:layout_constraintWidth_percent="0.5"-->
-    <!--        />-->
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/imageView4"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHeight_percent="0.5"-->
-    <!--        app:layout_constraintStart_toEndOf="@+id/imageView"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/imageView2"-->
-    <!--        app:layout_constraintWidth_percent="0.5"-->
-    <!--        />-->
-    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--        android:id="@+id/floatingActionButton"-->
-    <!--        android:layout_width="96dp"-->
-    <!--        android:layout_height="96dp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:layout_constraintVertical_bias="0.94"-->
-    <!--        android:scaleType="center"/>-->
-
-    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="0.47"-->
-    <!--        app:layout_constraintStart_toEndOf="@+id/floatingActionButton"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:layout_constraintVertical_bias="0.90999997" />-->
-
+        android:contentDescription="@string/capture_picture_button" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

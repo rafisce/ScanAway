@@ -15,8 +15,12 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.ScanAway">
-        <activity android:name=".PagingActivity" android:label="Page Arrangement"></activity>
-        <activity android:name=".ViewPdf" />
+        <activity
+            android:name=".PagingActivity"
+            android:label="Page Arrangement" />
+        <activity
+            android:name=".ViewPdf"
+            android:label="Pdf View" />
         <activity
             android:name=".FilterActivity"
             android:label="Filter" />
@@ -26,10 +30,8 @@
         <activity
             android:name=".ScanActivity"
             android:label="Scan" />
-        <activity android:name=".Welcome" />
         <activity
             android:name=".MainActivity"
-            android:label="Dashboard"
             android:theme="@style/ScanAwaySplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

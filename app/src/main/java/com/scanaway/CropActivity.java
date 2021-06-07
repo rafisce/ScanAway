@@ -1,40 +1,29 @@
 package com.scanaway;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
-import android.app.Instrumentation;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-
 import com.theartofdev.edmodo.cropper.CropImageView;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Random;
-import java.util.UUID;
+
+import butterknife.OnTouch;
 
 public class CropActivity extends AppCompatActivity {
 
 
     int imagesCount = 0;
     Bitmap cropped;
-    ImageView confirm, rRight, rLeft, crop;
+    ImageButton confirm, rRight, rLeft, crop;
     CropImageView cropImageView;
+    ConstraintLayout cropActions;
     ArrayList<Bitmap> croppedImages = new ArrayList<>();
 
     static ArrayList<Bitmap> scans;
@@ -45,6 +34,7 @@ public class CropActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop);
 
+        cropActions = findViewById(R.id.crop_actions);
         confirm = findViewById(R.id.confirm_crop);
         rRight = findViewById(R.id.rotate_right);
         rLeft = findViewById(R.id.rotate_left);
@@ -95,6 +85,23 @@ public class CropActivity extends AppCompatActivity {
         cropImageView.setAutoZoomEnabled(true);
         cropImageView.setShowProgressBar(true);
         cropImageView.setImageBitmap(scans.get(imagesCount));
+
+        cropImageView.setOnSetCropOverlayMovedListener(new CropImageView.OnSetCropOverlayMovedListener() {
+            @Override
+            public void onCropOverlayMoved(Rect rect) {
+
+                cropActions.setVisibility(View.INVISIBLE);
+            }
+
+
+        });
+
+        cropImageView.setOnSetCropOverlayReleasedListener(new CropImageView.OnSetCropOverlayReleasedListener() {
+            @Override
+            public void onCropOverlayReleased(Rect rect) {
+                cropActions.setVisibility(View.VISIBLE);
+            }
+        });
 
     }
 

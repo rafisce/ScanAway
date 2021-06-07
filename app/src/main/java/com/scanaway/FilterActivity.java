@@ -4,11 +4,11 @@ package com.scanaway;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,14 +19,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.marcinmoskala.arcseekbar.ArcSeekBar;
 import com.marcinmoskala.arcseekbar.ProgressListener;
-
 import org.opencv.android.OpenCVLoader;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -45,6 +44,7 @@ public class FilterActivity extends AppCompatActivity {
     }
 
     ProgressDialog dialog;
+    TextView brightnessPercentage,contrastPercentage;
     int checkFilter = 0;
     Bitmap original;
     Bitmap testPrev;
@@ -65,6 +65,8 @@ public class FilterActivity extends AppCompatActivity {
         new MyTaskFilter().execute();
         contrast = findViewById(R.id.contrast);
         brightness = findViewById(R.id.brightness);
+        contrastPercentage = findViewById(R.id.percentage_c);
+        brightnessPercentage = findViewById(R.id.percentage_b);
 
 
 
@@ -78,19 +80,38 @@ public class FilterActivity extends AppCompatActivity {
         contrast.setOnProgressChangedListener(new ProgressListener() {
             @Override
             public void invoke(int i) {
-
+                if(i!=100) {
+                    contrastPercentage.setText(String.valueOf(i / 10) + "%");
+                    contrastPercentage.setVisibility(View.VISIBLE);
+                }
                 float contrastValue = ScanAwayUtils.contrastConversion(i);
                 mainPrev.setImageBitmap(ScanAwayUtils.changeBitmapContrastBrightness(testPrev, contrastValue, 0));
+                (new Handler()).postDelayed(this::percentageVisibilityOff, 2000);
+            }
+
+            private void percentageVisibilityOff() {
+                contrastPercentage.setVisibility(View.INVISIBLE);
             }
         });
 
         brightness.setOnProgressChangedListener(new ProgressListener() {
             @Override
             public void invoke(int i) {
+                if(i!=500) {
+                    brightnessPercentage.setText(String.valueOf(i / 10) + "%");
+                    brightnessPercentage.setVisibility(View.VISIBLE);
+                }
                 float brightnessValue = ScanAwayUtils.brightnessConversion(i);
                 mainPrev.setImageBitmap(ScanAwayUtils.changeBitmapContrastBrightness(testPrev, 1, brightnessValue));
+                (new Handler()).postDelayed(this::percentageVisibilityOff, 2000);
+            }
+
+            private void percentageVisibilityOff() {
+                brightnessPercentage.setVisibility(View.INVISIBLE);
             }
         });
+
+
 
         mainPrev = findViewById(R.id.main_prev);
         prev.add(findViewById(R.id.filter1));
@@ -158,7 +179,6 @@ public class FilterActivity extends AppCompatActivity {
             bitmaps.add(ScanAwayUtils.filteredResult(bitmap,checkFilter,contrast.getProgress(),brightness.getProgress()));
 
         }
-        ArrayList<File> files = ScanAwayUtils.bitmapsToFiles(this,bitmaps,"ScanAway");
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("שמירת סריקה");
         builder.setMessage("הכנס שם לקובץ הסריקה");
@@ -167,9 +187,6 @@ public class FilterActivity extends AppCompatActivity {
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT );
         builder.setView(input);
-
-
-
         builder.setPositiveButton("אישור", null);
         builder.setNegativeButton("ביטול", null);
         AlertDialog dialog = builder.show();
@@ -180,7 +197,7 @@ public class FilterActivity extends AppCompatActivity {
             if(TextUtils.isEmpty(fileName)){
                 input.setError("אנא הכנס שם לקובץ הסריקה");
             } else {
-                ScanAwayUtils.savePfd(this,cropped,fileName);
+                ScanAwayUtils.savePfd(this,bitmaps,fileName);
                 dialog.dismiss();
             }
         });
@@ -189,6 +206,7 @@ public class FilterActivity extends AppCompatActivity {
                 dialog.cancel();
         });
     }
+
 
 
 

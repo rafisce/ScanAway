@@ -15,6 +15,7 @@
     <color name="soft_orange">#ffcc66</color>
     <color name="red">#ff0000</color>
     <color name="blue">#0066ff</color>
+    <color name="confirm_green">#33cc33</color>
 
     <array name="gradient">
         <item>#ffff00</item>

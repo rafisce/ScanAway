@@ -2,30 +2,32 @@ package com.scanaway;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.camera2.Camera2Config;
+import androidx.camera.core.Camera;
+import androidx.camera.core.CameraSelector;
 import androidx.camera.core.CameraX;
-import androidx.camera.core.ImageAnalysis;
-import androidx.camera.core.ImageAnalysisConfig;
+import androidx.camera.core.CameraXConfig;
 import androidx.camera.core.ImageCapture;
-import androidx.camera.core.ImageCaptureConfig;
+import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
-import androidx.camera.core.PreviewConfig;
+import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.camera.view.PreviewView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
-import android.Manifest;
-import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Rational;
@@ -39,28 +41,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.common.util.concurrent.ListenableFuture;
 
-import org.opencv.android.OpenCVLoader;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.UUID;
-
-import static org.opencv.imgproc.Imgproc.floodFill;
-
-public class ScanActivity extends AppCompatActivity {
-
-    private int REQUEST_CODE_PERMISSIONS = 101;
-    private String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+import java.util.concurrent.ExecutionException;
 
 
+public class ScanActivity extends AppCompatActivity implements CameraXConfig.Provider {
 
+
+    PreviewView previewView;
+    Preview preview;
+    ProcessCameraProvider cameraProvider;
+    ImageCapture imageCapture;
+    private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
+    Rational asp;
+    Size screen;
+    int aspRatioW;
+    int aspRatioH;
+    DisplayMetrics metrics;
     int count = 0;
-    ImageButton check;
+    ImageButton check, flash;
     ImageView lastPage;
     TextView imageCount;
     TextureView textureView;
@@ -68,127 +70,53 @@ public class ScanActivity extends AppCompatActivity {
     ArrayList<Bitmap> scans = new ArrayList<>();
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
 
+        previewView = findViewById(R.id.preview);
 
-        textureView = findViewById(R.id.view_finder);
-        imageCount = findViewById(R.id.pages_count);
-        lastPage = findViewById(R.id.last_page);
-        check = findViewById(R.id.check);
-        capture = findViewById(R.id.capture);
+        loadActivity();
 
-        check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToEdit();
-            }
-        });
 
-        imageCount.setVisibility(View.INVISIBLE);
-        lastPage.setVisibility(View.INVISIBLE);
-        if (allPermissionsGranted()) {
-            startCamera(); //start camera if permission has been granted by user
-        } else {
-            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
-
-        }
 
     }
 
+
     private void startCamera() {
-        //make sure there isn't another camera instance running before starting
-        CameraX.unbindAll();
-
-        /* start preview */
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-
-        int aspRatioW = ((int) metrics.widthPixels); //get width of scree
-        int aspRatioH = ((int) metrics.heightPixels); //get height
-        Rational asp = new Rational(aspRatioW, aspRatioH); //aspect ratio
-        Size screen = new Size(aspRatioW, aspRatioH); //size of the screen
-
-        //config obj for preview/viewfinder thingy.
-
-        PreviewConfig pConfig = new PreviewConfig.Builder().setTargetAspectRatio(asp).setTargetResolution(screen).build();
-        Preview preview = new Preview(pConfig); //lets build it
-
-        preview.setOnPreviewOutputUpdateListener(
-                new Preview.OnPreviewOutputUpdateListener() {
-                    //to update the surface texture we have to destroy it first, then re-add it
-                    @Override
-                    public void onUpdated(Preview.PreviewOutput output) {
-                        ViewGroup parent = (ViewGroup) textureView.getParent();
-                        parent.removeView(textureView);
-                        parent.addView(textureView, 0);
-                        textureView.setSurfaceTexture(output.getSurfaceTexture());
-                        updateTransform();
-                    }
-                });
-
-        /* image capture */
-
-        //config obj, selected capture mode
-        ImageCaptureConfig imgCapConfig = new ImageCaptureConfig.Builder().setCaptureMode(ImageCapture.CaptureMode.MIN_LATENCY).setTargetAspectRatio(asp)
-                .setTargetRotation(getWindowManager().getDefaultDisplay().getRotation()).build();
-        final ImageCapture imgCap = new ImageCapture(imgCapConfig);
-
         capture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                imageCapture.takePicture(ContextCompat.getMainExecutor(getBaseContext()), new ImageCapture.OnImageCapturedCallback() {
 
-                File folder = new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DCIM) +
-                        File.separator + "ScanAway");
-                boolean success = true;
-                if (!folder.exists()) {
-                    success = folder.mkdirs();
-                }
-                if (success) {
-                    File dir = new File(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DCIM), "ScanAway/ScanAway_" + UUID.randomUUID().toString() + ".jpg");
-                    imgCap.takePicture(dir, new ImageCapture.OnImageSavedListener() {
-                        @Override
-                        public void onImageSaved(@NonNull File file) {
-                            String msg = "Photo capture succeeded: " + file.getAbsolutePath();
-//                            galleryAddPic(file.getAbsolutePath());
-                            Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
-                            trackPhotos(file);
-                        }
+                    @Override
+                    public void onCaptureSuccess(ImageProxy imageProxy) {
+                        Log.i("image proxy", String.valueOf(imageProxy.getHeight()) + " " + String.valueOf(imageProxy.getWidth()));
+                        Log.i("screen", String.valueOf(String.valueOf(screen)));
+                        Log.i("aspect ratio", String.valueOf(aspRatioW)+" "+String.valueOf(aspRatioH));
+                        Log.i("screen physical", String.valueOf(metrics.widthPixels)+" "+String.valueOf(metrics.heightPixels));
+                        Log.i("preview view", String.valueOf(previewView.getWidth())+" "+String.valueOf(previewView.getHeight()));
 
-                        @Override
-                        public void onError(@NonNull ImageCapture.UseCaseError useCaseError, @NonNull String message, @Nullable Throwable cause) {
-                            String msg = "Photo capture failed: " + message;
-                            Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
-                            if (cause != null) {
-                                cause.printStackTrace();
-                            }
-                        }
-                    });
-                }
+
+                        trackPhotos(Bitmap.createScaledBitmap(ScanAwayUtils.getBitmap(imageProxy), 1955, aspRatioW, true));
+
+                        imageProxy.close();
+                    }
+
+                    @Override
+                    public void onError(ImageCaptureException exception) {
+                        // Handle the exception however you'd like
+                        Log.i("hhhh", "kkkkkk");
+                    }
+                });
             }
         });
 
-        /* image analyser */
 
-        ImageAnalysisConfig imgAConfig = new ImageAnalysisConfig.Builder().setImageReaderMode(ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE).build();
-        ImageAnalysis analysis = new ImageAnalysis(imgAConfig);
-
-        analysis.setAnalyzer(
-                new ImageAnalysis.Analyzer() {
-                    @Override
-                    public void analyze(ImageProxy image, int rotationDegrees) {
-                        //y'all can add code to analyse stuff here idek go wild.
-                    }
-                });
-
-        //bind to lifecycle:
-        CameraX.bindToLifecycle((LifecycleOwner) this, analysis, imgCap, preview);
     }
+
 
     private void updateTransform() {
         /*
@@ -227,45 +155,14 @@ public class ScanActivity extends AppCompatActivity {
         textureView.setTransform(mx); //apply transformations to textureview
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        //start camera when permissions have been granted otherwise exit app
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
-                startCamera();
-            } else {
-                Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }
-    }
-
-    private boolean allPermissionsGranted() {
-        //check if req permissions have been granted
-        for (String permission : REQUIRED_PERMISSIONS) {
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-//    private void galleryAddPic(String path) {
-//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//        File f = new File(path);
-//        Uri contentUri = Uri.fromFile(f);
-//        mediaScanIntent.setData(contentUri);
-//        this.sendBroadcast(mediaScanIntent);
-//    }
-
-    private void trackPhotos(File file) {
+    private void trackPhotos(Bitmap scan) {
 
         count++;
-        if (file.exists()) {
+        if (scan != null) {
 
-            Bitmap scan = BitmapFactory.decodeFile(file.getAbsolutePath());
+            scan = ScanAwayUtils.rotateBitmap(scan, 90);
             scans.add(scan);
-            lastPage.setImageBitmap(ScanAwayUtils.rotateBitmap(scan,90));
+            lastPage.setImageBitmap(scan);
             imageCount.setText(String.valueOf(count));
             imageCount.setVisibility(View.VISIBLE);
             lastPage.setAlpha(255);
@@ -288,4 +185,124 @@ public class ScanActivity extends AppCompatActivity {
             finish();
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //start camera when permissions have been granted otherwise exit app
+        if (requestCode == PermissionsUtils.REQUEST_CODE_PERMISSIONS) {
+            if (PermissionsUtils.allPermissionsGranted(this)) {
+                startCamera();
+            } else {
+                new AlertDialog.Builder(this)
+                        .setTitle("לאפליקציה אין הרשאות!")
+                        .setMessage("הרשאות לא אושרו על ידי המשתמש.\nאשר הרשאות כדי להשתמש באפליקציה.")
+                        .setPositiveButton("להרשאות", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        Uri.fromParts("package", getPackageName(), null));
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .setNegativeButton("יציאה", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                finish();
+            }
+        }
+    }
+
+
+    @NonNull
+    @Override
+    public CameraXConfig getCameraXConfig() {
+        return Camera2Config.defaultConfig();
+    }
+
+    void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
+        preview = new Preview.Builder().setTargetResolution(screen)
+                .build();
+
+        imageCapture =
+                new ImageCapture.Builder()
+                        .setFlashMode(ImageCapture.FLASH_MODE_OFF)
+                        .setTargetResolution(screen)
+                        .build();
+
+        CameraSelector cameraSelector = new CameraSelector.Builder()
+                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .build();
+
+        preview.setSurfaceProvider(previewView.getSurfaceProvider());
+
+        Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector,imageCapture, preview);
+    }
+
+    public void loadActivity()
+    {
+        imageCount = findViewById(R.id.pages_count);
+        lastPage = findViewById(R.id.last_page);
+        check = findViewById(R.id.check);
+        flash = findViewById(R.id.flash);
+        capture = findViewById(R.id.capture);
+        metrics = getResources().getDisplayMetrics();
+        aspRatioW =((int) metrics.widthPixels);
+        aspRatioH = ((int) metrics.heightPixels); //get height
+        asp = new Rational(aspRatioW, aspRatioH); //aspect ratio
+        screen = new Size(aspRatioW, aspRatioH); //size of the screen
+        cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+
+        cameraProviderFuture.addListener(() -> {
+            try {
+                cameraProvider = cameraProviderFuture.get();
+                bindPreview(cameraProvider);
+            } catch (ExecutionException | InterruptedException e) {
+                // No errors need to be handled for this Future.
+                // This should never be reached.
+            }
+        }, ContextCompat.getMainExecutor(getBaseContext()));
+        check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToEdit();
+            }
+        });
+
+        flash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (imageCapture.getFlashMode() == ImageCapture.FLASH_MODE_OFF) {
+                    imageCapture.setFlashMode(ImageCapture.FLASH_MODE_ON);
+                    flash.setImageDrawable(getResources().getDrawable(R.drawable.flash_on));
+                } else if (imageCapture.getFlashMode() == ImageCapture.FLASH_MODE_ON) {
+                    imageCapture.setFlashMode(ImageCapture.FLASH_MODE_AUTO);
+                    flash.setImageDrawable(getResources().getDrawable(R.drawable.flash_auto));
+                } else {
+                    imageCapture.setFlashMode(ImageCapture.FLASH_MODE_OFF);
+                    flash.setImageDrawable(getResources().getDrawable(R.drawable.flash_off));
+                }
+            }
+        });
+
+        imageCount.setVisibility(View.INVISIBLE);
+        lastPage.setVisibility(View.INVISIBLE);
+        if (PermissionsUtils.allPermissionsGranted(getBaseContext())) {
+            startCamera(); //start camera if permission has been granted by user
+        } else {
+            ActivityCompat.requestPermissions(ScanActivity.this, PermissionsUtils.REQUIRED_PERMISSIONS, PermissionsUtils.REQUEST_CODE_PERMISSIONS);
+
+        }
+    }
+
+
+
 }

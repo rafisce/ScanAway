@@ -15,7 +15,6 @@
         <!-- Customize your theme here. -->
     </style>
     <style name="ScanAwaySplash" parent="Theme.MaterialComponents.Light.NoActionBar">
-
         <item name="android:windowBackground">@drawable/splash_background</item>
         <item name="android:statusBarColor">@color/purple_200</item>
     </style>
