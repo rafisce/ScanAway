@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         else {
+            setTheme(R.style.Theme_ScanAway);
             ActivityCompat.requestPermissions(this, PermissionsUtils.REQUIRED_PERMISSIONS, PermissionsUtils.REQUEST_CODE_PERMISSIONS);
         }
 
@@ -150,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-
             if (checkFilterActivity) {
                 setTheme(R.style.Theme_ScanAway);
                 dialog.setTitle("טוען");
