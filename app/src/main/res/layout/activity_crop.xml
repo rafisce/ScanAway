@@ -13,7 +13,7 @@
        app:cropBorderCornerColor="@color/lagoon_700"
        app:cropBorderLineThickness="0.1dp"
        app:cropGuidelines="off"
-       app:cropScaleType="fitCenter"
+       app:cropScaleType="centerCrop"
        app:layout_constraintBottom_toBottomOf="parent"
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintStart_toStartOf="parent"
