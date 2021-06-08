@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
         sortDate = findViewById(R.id.date_sort);
         sortAlphabet = findViewById(R.id.alphabet_sort);
         CoordinatorLayout coordinatorLayout=(CoordinatorLayout)findViewById(R.id.coordinatorLayout);
+        coordinatorLayout.bringToFront();
         scan = findViewById(R.id.go_to_scan);
         scan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG);
-                snackbar.setBackgroundTint(getResources().getColor(R.color.lagoon_500_transparent));
+                snackbar.setBackgroundTint(getResources().getColor(R.color.lagoon_200));
                 snackbar.setTextColor(getResources().getColor(R.color.lagoon_700));
                 View view = snackbar.getView();
                 CoordinatorLayout.LayoutParams params=(CoordinatorLayout.LayoutParams)view.getLayoutParams();
@@ -214,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG);
-                snackbar.setBackgroundTint(getResources().getColor(R.color.lagoon_500_transparent));
+                snackbar.setBackgroundTint(getResources().getColor(R.color.lagoon_200));
                 snackbar.setTextColor(getResources().getColor(R.color.lagoon_700));
                 View view = snackbar.getView();
                 CoordinatorLayout.LayoutParams params=(CoordinatorLayout.LayoutParams)view.getLayoutParams();
