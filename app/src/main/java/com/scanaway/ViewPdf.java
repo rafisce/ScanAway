@@ -7,9 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-
 import com.github.barteksc.pdfviewer.PDFView;
 
 import java.io.File;
@@ -52,7 +50,6 @@ public class ViewPdf extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
 
             path = getIntent().getStringExtra("path");
-            Log.i("ppp",path);
             pdf = new File(path);
             while(!pdf.exists())
             {
@@ -74,7 +71,6 @@ public class ViewPdf extends AppCompatActivity {
             dialog.setMessage("אנא המתן");
             dialog.setCancelable(false);
             dialog.show();
-            // Do something like display a progress bar
         }
 
         @Override

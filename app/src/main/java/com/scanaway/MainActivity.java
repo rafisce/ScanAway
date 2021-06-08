@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView sortDate, sortAlphabet;
     MyRecyclerAdapterMain adapter;
     static boolean checkFilterActivity = false;
+    static String savedFile;
     ArrayList<File> fileList = new ArrayList<>();
     ArrayList<Scan> scanList = new ArrayList<>();
     ArrayList<Bitmap> bitmaps = new ArrayList<>();
@@ -147,14 +148,13 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-        // Runs in UI before background thread is called
         @Override
         protected void onPreExecute() {
 
             if (checkFilterActivity) {
                 setTheme(R.style.Theme_ScanAway);
                 dialog.setTitle("טוען");
-                dialog.setMessage("אנא המתן");
+                dialog.setMessage(savedFile);
                 dialog.show();
             }
             super.onPreExecute();
@@ -255,8 +255,6 @@ public class MainActivity extends AppCompatActivity {
                                 finish();
                             }
                         })
-
-                        // A null listener allows the button to dismiss the dialog and take no further action.
                         .setNegativeButton("יציאה", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

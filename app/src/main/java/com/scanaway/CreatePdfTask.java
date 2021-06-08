@@ -7,7 +7,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -22,6 +28,7 @@ import java.util.ArrayList;
 
 
 public class CreatePdfTask extends AsyncTask<String, Integer, File> {
+
     Context context;
     ArrayList<Bitmap> files;
     ProgressDialog progressDialog;
@@ -98,13 +105,21 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
                         image.setAlignment(Image.ALIGN_CENTER | Image.ALIGN_MIDDLE);
 
                         float scale = Math.min(document.getPageSize().getWidth() / image.getWidth(), document.getPageSize().getHeight() / image.getHeight());
+
+
                         float width = image.getWidth() * scale * 0.98f;
                         float height = image.getHeight() * scale * 0.98f;
-                        float newWidth = (document.getPageSize().getWidth()-width) / 2f;
-                        float newHeight = (document.getPageSize().getHeight() - height) / 2f;
+                        float absoluteX = (document.getPageSize().getWidth()-width) / 2f;
+                        float absoluteY = (document.getPageSize().getHeight() - height) / 2f;
+
+//                        Log.i("ss document size",String.valueOf(document.getPageSize().getWidth()+"x"+String.valueOf(document.getPageSize().getHeight())));
+//                        Log.i("ss image size",String.valueOf(image.getWidth()+"x"+String.valueOf(image.getHeight())));
+//                        Log.i("ss scale",String.valueOf(scale));
+//                        Log.i("ss image after",String.valueOf(image.getWidth() * scale)+"x"+String.valueOf(image.getHeight() * scale));
+//                        Log.i("ss image after 0.98",String.valueOf(width)+"x"+String.valueOf(height));
 
                         image.scaleToFit(width, height);
-                        image.setAbsolutePosition(newWidth, newHeight);
+                        image.setAbsolutePosition(absoluteX, absoluteY);
                         document.add(image);
                         document.newPage();
                         publishProgress(i);
@@ -147,10 +162,8 @@ public class CreatePdfTask extends AsyncTask<String, Integer, File> {
     @Override
     protected void onPostExecute(File file) {
         super.onPostExecute(file);
-        progressDialog.dismiss();
-
-        Toast.makeText(context, "Pdf נשמר ב - " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
         MainActivity.checkFilterActivity = true;
+        MainActivity.savedFile = "הקובץ "+name+".Pdf נשמר ב - "+file.getPath();
         Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
         ((Activity) context).finish();

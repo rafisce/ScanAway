@@ -9,12 +9,10 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import butterknife.OnTouch;
 
 public class CropActivity extends AppCompatActivity {
 
@@ -79,7 +77,7 @@ public class CropActivity extends AppCompatActivity {
 
 
         if (scans.size() == 1) {
-            confirm.setImageResource(R.drawable.ic_check);
+            confirm.setImageResource(R.drawable.check_circle);
         }
         cropImageView = findViewById(R.id.cropImageView);
         cropImageView.setAutoZoomEnabled(true);
@@ -119,7 +117,7 @@ public class CropActivity extends AppCompatActivity {
 
 
             if (imagesCount == scans.size() - 1) {
-                confirm.setImageResource(R.drawable.ic_check);
+                confirm.setImageResource(R.drawable.check_circle);
             }
 
         } else {

@@ -10,7 +10,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.pdf.PdfRenderer;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
 import androidx.camera.core.ImageProxy;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
@@ -56,7 +55,6 @@ public class ScanAwayUtils {
         float new_max = 255;
 
         float new_value = ((old_value - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min;
-        Log.i("brightness sta", String.valueOf(new_value));
         return new_value;
     }
 
@@ -69,7 +67,6 @@ public class ScanAwayUtils {
         float new_max = 10;
 
         float new_value = ((old_value - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min;
-        Log.i("contrast sta", String.valueOf(new_value));
         return new_value;
     }
 
@@ -149,7 +146,6 @@ public class ScanAwayUtils {
         thresh3 = new Mat();
         thresh4 = new Mat();
 
-        Log.i("bitmap second", String.valueOf(bitmap1));
         Utils.bitmapToMat(bitmap1, originalMat);
 
         Imgproc.cvtColor(originalMat, grayMat, Imgproc.COLOR_BGR2GRAY);

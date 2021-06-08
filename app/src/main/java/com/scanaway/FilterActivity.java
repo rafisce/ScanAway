@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -19,13 +20,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.marcinmoskala.arcseekbar.ArcSeekBar;
 import com.marcinmoskala.arcseekbar.ProgressListener;
 import org.opencv.android.OpenCVLoader;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -149,7 +151,7 @@ public class FilterActivity extends AppCompatActivity {
         for (int pre = 0; pre < 6; pre++) {
             filters.add(ScanAwayUtils.filter(original.copy(original.getConfig(),true), "filter" + String.valueOf(pre)));
             if (pre == 0) {
-                prev.get(pre).setBorderColor(getResources().getColor(R.color.soft_orange));
+                prev.get(pre).setBorderColor(getResources().getColor(R.color.blue));
             }
             prev.get(pre).setImageBitmap(filters.get(pre));
         }
@@ -161,7 +163,7 @@ public class FilterActivity extends AppCompatActivity {
     public void selectPrev(int selected, ArrayList<Bitmap> bitmap) {
         for (int p = 0; p < 6; p++) {
             if (p == selected) {
-                prev.get(p).setBorderColor(getResources().getColor(R.color.soft_orange));
+                prev.get(p).setBorderColor(getResources().getColor(R.color.blue));
             } else {
                 prev.get(p).setBorderColor(getResources().getColor(R.color.transparent));
             }
@@ -194,8 +196,13 @@ public class FilterActivity extends AppCompatActivity {
         Button neg = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
         pos.setOnClickListener(view1 -> {
             String fileName = input.getText().toString().trim();
-            if(TextUtils.isEmpty(fileName)){
+            File file = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS), "ScanAway/" + fileName + ".pdf");
+            if(TextUtils.isEmpty(fileName)) {
                 input.setError("אנא הכנס שם לקובץ הסריקה");
+            }
+            else if(file.exists()) {
+                input.setError("כבר קיים קובץ עם השם הזה!");
             } else {
                 ScanAwayUtils.savePfd(this,bitmaps,fileName);
                 dialog.dismiss();

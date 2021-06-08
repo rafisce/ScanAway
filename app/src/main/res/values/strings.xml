@@ -15,5 +15,9 @@
     <string name="delete_scan_button">delete scan button</string>
     <string name="delete_page_button">delete page button</string>
     <string name="share_scan_button">share scan button</string>
+    <string name="go_to_scan">go to scan</string>
+    <string name="sort_by_date">sort by date</string>
+    <string name="sort_alphabetically">sort alphabetically</string>
+    <string name="choose_photos">choose photos</string>
 
 </resources>
