@@ -10,7 +10,7 @@
        android:id="@+id/cropImageView"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       app:cropBorderCornerColor="@color/purple_500"
+       app:cropBorderCornerColor="@color/lagoon_700"
        app:cropBorderLineThickness="0.1dp"
        app:cropGuidelines="off"
        app:cropScaleType="fitCenter"
@@ -31,7 +31,7 @@
        app:layout_constraintStart_toStartOf="parent"
        app:layout_constraintTop_toTopOf="parent"
        app:layout_constraintVertical_bias="1.0"
-       android:background="@color/purple_transparent"
+       android:background="@color/lagoon_500_transparent"
        >
 
       <ImageButton

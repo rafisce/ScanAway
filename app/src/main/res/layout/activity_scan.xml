@@ -9,7 +9,7 @@
     <androidx.camera.view.PreviewView
         android:id="@+id/preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></androidx.camera.view.PreviewView>
+        android:layout_height="match_parent"/>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -69,7 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/appbar"
+        android:backgroundTint="@color/lagoon_500_transparent"
         android:contentInsetStart="0dp"
         android:contentInsetLeft="0dp"
         android:contentInsetEnd="0dp"

@@ -5,6 +5,12 @@
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
 
+    <color name="lagoon_200">#c7fff8</color>
+    <color name="lagoon_500">#89d9ce</color>
+    <color name="lagoon_700">#3f8c82</color>
+    <color name="lagoon_500_transparent">#2A89d9ce</color>
+
+
     <color name="purple_transparent">#2A3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
@@ -31,6 +37,22 @@
         <item>#e0b3ff</item>
         <item>#ebccff</item>
         <item>#f5e6ff</item>
+        <item>#ffffff</item>
+    </array>
+
+    <array name="lagoon_gradient">
+        <item>#3f8c82</item>
+        <item>#479e93</item>
+        <item>#4fb0a3</item>
+        <item>#61b8ac</item>
+        <item>#72c0b5</item>
+        <item>#84c8bf</item>
+        <item>#95d0c8</item>
+        <item>#a7d7d1</item>
+        <item>#b9dfda</item>
+        <item>#cae7e3</item>
+        <item>#dcefed</item>
+        <item>#edf7f6</item>
         <item>#ffffff</item>
     </array>
 </resources>

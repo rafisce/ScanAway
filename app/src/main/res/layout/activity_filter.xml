@@ -19,9 +19,9 @@
         app:layout_constraintVertical_bias="0.0"
         app:progress="100"
         app:maxProgress="1000"
-        app:progressBackgroundColor="@color/purple_200"
+        app:progressBackgroundColor="@color/lagoon_200"
         app:progressBackgroundWidth="6dp"
-        app:progressColor="@color/purple_500"
+        app:progressColor="@color/lagoon_700"
         app:progressWidth="6dp"
         app:roundEdges="true" />
 
@@ -38,9 +38,9 @@
         app:layout_constraintVertical_bias="0.05"
         app:progress="500"
         app:maxProgress="1000"
-        app:progressBackgroundColor="@color/purple_200"
+        app:progressBackgroundColor="@color/lagoon_200"
         app:progressBackgroundWidth="6dp"
-        app:progressColor="@color/purple_500"
+        app:progressColor="@color/lagoon_700"
         app:progressWidth="6dp"
         app:roundEdges="true" />
 
@@ -77,7 +77,7 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/purple_200"
+            android:background="@color/lagoon_500"
             android:orientation="horizontal"
             android:weightSum="6"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:scaleType="fitXY"
-                app:riv_border_color="@color/purple_200"
+                app:riv_border_color="@color/lagoon_500"
                 app:riv_border_width="3dip"
                 app:riv_corner_radius="10dp" />
 
@@ -157,7 +157,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="30sp"
-        android:textColor="@color/purple_200"
+        android:textColor="@color/lagoon_500"
         android:textStyle="bold"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/main_prev"
@@ -171,7 +171,7 @@
         android:id="@+id/percentage_c"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/purple_200"
+        android:textColor="@color/lagoon_500"
         android:textSize="30sp"
         android:textStyle="bold"
         android:visibility="invisible"

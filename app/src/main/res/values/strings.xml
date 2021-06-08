@@ -19,5 +19,7 @@
     <string name="sort_by_date">sort by date</string>
     <string name="sort_alphabetically">sort alphabetically</string>
     <string name="choose_photos">choose photos</string>
+    <string name="main_menu_message">main menu message</string>
+    <string name="empty_message">אין מסמכים להצגה.\n סרוק מסמך חדש.</string>
 
 </resources>

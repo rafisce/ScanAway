@@ -3,12 +3,12 @@
     <size
         android:width="20dp"
         android:height="20dp"/>
-    <solid android:color="@color/purple_700"/>
+    <solid android:color="@color/lagoon_700"/>
     <gradient
         android:type="radial"
         android:gradientRadius="60%p"
-        android:startColor="@color/purple_500"
-        android:endColor="@color/purple_500"/>
+        android:startColor="@color/lagoon_200"
+        android:endColor="@color/lagoon_700"/>
 
 " />
     <corners android:radius="360dp"/>

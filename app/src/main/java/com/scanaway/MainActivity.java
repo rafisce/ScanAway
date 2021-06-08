@@ -4,6 +4,8 @@ package com.scanaway;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.TooltipCompat;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -13,15 +15,21 @@ import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
+
 import java.io.File;
 import java.util.ArrayList;
 import Adapter.MyRecyclerAdapterMain;
@@ -38,8 +46,11 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.recycler_view_main)
     RecyclerView recyclerView;
     ItemTouchHelper itemTouchHelper;
+
+    String message;
     ImageView scan;
     ProgressDialog dialog;
+    TextView emptyMessage;
     ImageView gallery;
     ImageView sortDate, sortAlphabet;
     MyRecyclerAdapterMain adapter;
@@ -61,13 +72,15 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
+        fileList = ScanAwayUtils.getAllFiles(path);
         if (PermissionsUtils.allPermissionsGranted(this)) {
             loadActivity();
 
         }
         else {
-            setTheme(R.style.Theme_ScanAway);
+            setTheme(R.style.Theme_ScanAway2);
             ActivityCompat.requestPermissions(this, PermissionsUtils.REQUIRED_PERMISSIONS, PermissionsUtils.REQUEST_CODE_PERMISSIONS);
+
         }
 
     }
@@ -135,49 +148,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private class MyTaskMain extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            if (!fileList.isEmpty()) {
-                for (File f : fileList) {
-                    scanList.add(new Scan(ScanAwayUtils.pdfToBitmap(f, getBaseContext(), 1), f.getName().split("_")[0], f));
-
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            if (checkFilterActivity) {
-                setTheme(R.style.Theme_ScanAway);
-                dialog.setTitle("טוען");
-                dialog.setMessage(savedFile);
-                dialog.show();
-            }
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-
-            super.onPostExecute(aVoid);
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
-            loadDashboard();
-
-        }
-    }
 
     public void loadDashboard() {
 
         setContentView(R.layout.activity_main);
+
+        emptyMessage = findViewById(R.id.empty_message);
+        showMessage();
         gallery = findViewById(R.id.gallery);
         sortDate = findViewById(R.id.date_sort);
         sortAlphabet = findViewById(R.id.alphabet_sort);
+        CoordinatorLayout coordinatorLayout=(CoordinatorLayout)findViewById(R.id.coordinatorLayout);
         scan = findViewById(R.id.go_to_scan);
         scan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,6 +184,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 adapter.byDate();
+                if(fileList.isEmpty()){
+                    message = "אין קבצים למיין לפי תאריך";
+                }
+                else {
+                    message = "מוין לפי תאריך";
+                }
+
+                Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG);
+                snackbar.setBackgroundTint(getResources().getColor(R.color.lagoon_500_transparent));
+                snackbar.setTextColor(getResources().getColor(R.color.lagoon_700));
+                View view = snackbar.getView();
+                CoordinatorLayout.LayoutParams params=(CoordinatorLayout.LayoutParams)view.getLayoutParams();
+                params.gravity = Gravity.TOP;
+                view.setLayoutParams(params);
+                snackbar.show();
             }
         });
 
@@ -210,6 +206,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 adapter.byName();
+                if(fileList.isEmpty()){
+                    message = "אין קבצים למיין לפי שם";
+                }
+                else {
+                    message = "מוין לפי שם";
+                }
+
+                Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG);
+                snackbar.setBackgroundTint(getResources().getColor(R.color.lagoon_500_transparent));
+                snackbar.setTextColor(getResources().getColor(R.color.lagoon_700));
+                View view = snackbar.getView();
+                CoordinatorLayout.LayoutParams params=(CoordinatorLayout.LayoutParams)view.getLayoutParams();
+                params.gravity = Gravity.TOP;
+                view.setLayoutParams(params);
+                snackbar.show();
             }
         });
 
@@ -220,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadActivity() {
         dialog = new ProgressDialog(this);
-        fileList = ScanAwayUtils.getAllFiles(path);
+
         if (!checkFilterActivity) {
             if (!fileList.isEmpty()) {
                 for (File f : fileList) {
@@ -228,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             }
-            setTheme(R.style.Theme_ScanAway);
+            setTheme(R.style.Theme_ScanAway2);
             loadDashboard();
         } else {
             new MyTaskMain().execute();
@@ -267,4 +278,57 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void showMessage()
+    {
+        if(fileList.isEmpty())
+        {
+            emptyMessage.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            emptyMessage.setVisibility(View.INVISIBLE);
+
+        }
+    }
+
+    private class MyTaskMain extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            if (!fileList.isEmpty()) {
+                for (File f : fileList) {
+                    scanList.add(new Scan(ScanAwayUtils.pdfToBitmap(f, getBaseContext(), 1), f.getName().split("_")[0], f));
+
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            if (checkFilterActivity) {
+                setTheme(R.style.Theme_ScanAway2);
+                dialog.setTitle("טוען");
+                dialog.setMessage(savedFile);
+                dialog.show();
+            }
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+            super.onPostExecute(aVoid);
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            loadDashboard();
+
+        }
+    }
+
+
 }
+

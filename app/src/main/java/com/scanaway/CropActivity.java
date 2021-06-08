@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 public class CropActivity extends AppCompatActivity {
 
 
-    int imagesCount = 0;
+    static int imagesCount = 0;
     Bitmap cropped;
     ImageButton confirm, rRight, rLeft, crop;
     CropImageView cropImageView;
@@ -32,11 +33,15 @@ public class CropActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         cropActions = findViewById(R.id.crop_actions);
         confirm = findViewById(R.id.confirm_crop);
         rRight = findViewById(R.id.rotate_right);
         rLeft = findViewById(R.id.rotate_left);
         crop = findViewById(R.id.crop);
+
 
 
         confirm.setOnClickListener(new View.OnClickListener() {
@@ -104,8 +109,9 @@ public class CropActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        finish();
+    protected void onResume() {
+        super.onResume();
+        confirm.setImageResource(R.drawable.ic_navigate_next);
     }
 
     private void cropNext() throws IOException, InterruptedException {
@@ -133,9 +139,16 @@ public class CropActivity extends AppCompatActivity {
         FilterActivity.cropped = scans;
         Intent intent = new Intent(getBaseContext(), FilterActivity.class);
         startActivity(intent);
-        finish();
 
+    }
 
+    public boolean onOptionsItemSelected(MenuItem item){
+
+        Intent myIntent = new Intent(this, ScanActivity.class);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(myIntent);
+
+        return true;
     }
 
 

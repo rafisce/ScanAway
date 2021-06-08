@@ -14,10 +14,32 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
-    <style name="ScanAwaySplash" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_background</item>
-        <item name="android:statusBarColor">@color/purple_200</item>
+
+    <style name="Theme.ScanAway2" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/lagoon_500</item>
+        <item name="colorPrimaryVariant">@color/lagoon_500</item>
+        <item name="colorOnPrimary">@color/lagoon_700</item>
+
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_700</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
     </style>
+    <style name="ScanAwaySplash" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_background_lagoon</item>
+        <item name="android:statusBarColor">@color/lagoon_500</item>
+    </style>
+<!--    <style name="ScanAwaySplash2" parent="Theme.MaterialComponents.Light.NoActionBar">-->
+<!--        <item name="android:windowBackground">@drawable/splash_background_lagoon</item>-->
+<!--        <item name="android:statusBarColor">@color/lagoon_500</item>-->
+<!--    </style>-->
+
+
+
 
 
 </resources>

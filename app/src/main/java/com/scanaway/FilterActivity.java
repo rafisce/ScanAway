@@ -5,6 +5,7 @@ package com.scanaway;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -63,6 +64,9 @@ public class FilterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         dialog = new ProgressDialog(this);
         new MyTaskFilter().execute();
         contrast = findViewById(R.id.contrast);
@@ -72,7 +76,7 @@ public class FilterActivity extends AppCompatActivity {
 
 
 
-        int[] colorArray = getResources().getIntArray(R.array.purple_gradient);
+        int[] colorArray = getResources().getIntArray(R.array.lagoon_gradient);
         contrast.setProgressBackgroundGradient(colorArray);
         brightness.setProgressBackgroundGradient(colorArray);
         contrast.bringToFront();
@@ -237,6 +241,13 @@ public class FilterActivity extends AppCompatActivity {
             }
             return true;
         }
+        else
+        {
+            CropActivity.imagesCount=0;
+            Intent myIntent = new Intent(this, CropActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(myIntent);
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -273,5 +284,7 @@ public class FilterActivity extends AppCompatActivity {
             }
         }
     }
+
+
 
 }

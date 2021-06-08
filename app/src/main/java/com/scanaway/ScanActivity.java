@@ -28,6 +28,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Rational;
 import android.util.Size;
+import android.view.MenuItem;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -71,8 +72,9 @@ public class ScanActivity extends AppCompatActivity implements CameraXConfig.Pro
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         previewView = findViewById(R.id.preview);
-
         loadActivity();
 
 
@@ -96,7 +98,7 @@ public class ScanActivity extends AppCompatActivity implements CameraXConfig.Pro
                         Log.i("preview view", String.valueOf(previewView.getWidth())+" "+String.valueOf(previewView.getHeight()));
 
 
-                        trackPhotos(Bitmap.createScaledBitmap(ScanAwayUtils.getBitmap(imageProxy), 1955, aspRatioW, true));
+                        trackPhotos(Bitmap.createScaledBitmap(ScanAwayUtils.getBitmap(imageProxy), aspRatioH, aspRatioW, true));
 
                         imageProxy.close();
                     }
@@ -110,6 +112,14 @@ public class ScanActivity extends AppCompatActivity implements CameraXConfig.Pro
         });
 
 
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent myIntent = new Intent(this, MainActivity.class);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(myIntent);
+
+        return true;
     }
 
 
